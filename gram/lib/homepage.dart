@@ -14,7 +14,7 @@ class HomePage extends StatelessWidget {
         ),
         actions: [
           CircleAvatar(
-            backgroundImage: NetworkImage('assets/images/download.jpeg'),
+            backgroundImage: AssetImage('assets/profiles/profile2.jpeg'),
           ),
           SizedBox(width: 16),
         ],
@@ -34,8 +34,8 @@ class HomePage extends StatelessWidget {
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: CircleAvatar(
-                        backgroundImage:
-                            NetworkImage('https://example.com${index}.jpg'),
+                        backgroundImage: AssetImage(
+                            'assets/images/profiles/profile${index}.jpeg'),
                         radius: 30,
                       ),
                     );
@@ -65,8 +65,8 @@ class HomePage extends StatelessWidget {
                             Colors.grey, // Replace with actual image or content
                         child: Column(
                           children: [
-                            Image.network(
-                                'https://example.com/content${index}.jpg'),
+                            Image.asset(
+                                'assets/images/content/cont${index}.jpeg'),
                             Text('Template ${index}',
                                 style: TextStyle(color: Colors.white)),
                           ],
