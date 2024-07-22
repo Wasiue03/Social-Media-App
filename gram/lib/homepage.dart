@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_nav_bar/google_nav_bar.dart';
 
 class HomePage extends StatelessWidget {
   @override
@@ -14,7 +15,7 @@ class HomePage extends StatelessWidget {
         ),
         actions: [
           CircleAvatar(
-            backgroundImage: AssetImage('assets/profiles/profile2.jpeg'),
+            backgroundImage: AssetImage('assets/images/profiles/profile2.jpeg'),
           ),
           SizedBox(width: 16),
         ],
@@ -65,10 +66,19 @@ class HomePage extends StatelessWidget {
                             Colors.grey, // Replace with actual image or content
                         child: Column(
                           children: [
-                            Image.asset(
-                                'assets/images/content/cont${index}.jpeg'),
-                            Text('Template ${index}',
-                                style: TextStyle(color: Colors.white)),
+                            Expanded(
+                              child: Image.asset(
+                                'assets/images/content/cont${index}.jpeg',
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(8.0),
+                              child: Text(
+                                'Template ${index}',
+                                style: TextStyle(color: Colors.white),
+                              ),
+                            ),
                           ],
                         ),
                       ),
@@ -80,30 +90,41 @@ class HomePage extends StatelessWidget {
           ),
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        backgroundColor: Colors.black,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home, color: Colors.white),
-            label: 'Home',
+      bottomNavigationBar: Container(
+        color: Colors.black,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
+          child: GNav(
+            backgroundColor: Colors.black,
+            color: Colors.white,
+            activeColor: Colors.white,
+            tabBackgroundColor: Colors.grey.shade800,
+            padding: EdgeInsets.all(16),
+            gap: 8,
+            tabs: [
+              GButton(
+                icon: Icons.home,
+                text: 'Home',
+              ),
+              GButton(
+                icon: Icons.search,
+                text: 'Search',
+              ),
+              GButton(
+                icon: Icons.add,
+                text: 'Add',
+              ),
+              GButton(
+                icon: Icons.favorite,
+                text: 'Favorites',
+              ),
+              GButton(
+                icon: Icons.person,
+                text: 'Profile',
+              ),
+            ],
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.search, color: Colors.white),
-            label: 'Search',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.add, color: Colors.white),
-            label: 'Add',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.favorite, color: Colors.white),
-            label: 'Favorites',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person, color: Colors.white),
-            label: 'Profile',
-          ),
-        ],
+        ),
       ),
     );
   }
