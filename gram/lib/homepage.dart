@@ -87,7 +87,9 @@ class HomePage extends StatelessWidget {
                   },
                 ),
               ),
-              PostFeed(),
+              PostFeed(
+                posts: [],
+              ),
             ],
           ),
         ),
