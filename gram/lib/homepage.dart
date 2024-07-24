@@ -1,8 +1,33 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:gram/feed/add_posts.dart';
 import 'package:gram/feed/post_feed.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  List<Map<String, dynamic>> _posts = [];
+
+  void _addPost(Map<String, dynamic> post) {
+    setState(() {
+      _posts.add(post);
+    });
+  }
+
+  void _navigateToPostUpload() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => PostUploadScreen(
+          onPostUploaded: _addPost,
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -44,51 +69,69 @@ class HomePage extends StatelessWidget {
                   },
                 ),
               ),
-              // Explore Top Trending Templates
+              // Trending Blogs Section
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Text(
-                  'Explore Top Trending Templates🔥',
-                  style: TextStyle(color: Colors.white, fontSize: 18),
-                ),
-              ),
-              // Content
-              Container(
-                height: 300, // Example height
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 5, // Replace with the actual count
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Container(
-                        width: 200, // Example width
-                        color:
-                            Colors.grey, // Replace with actual image or content
-                        child: Column(
-                          children: [
-                            Expanded(
-                              child: Image.asset(
-                                'assets/images/content/cont${index}.jpeg',
-                                fit: BoxFit.cover,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Trending Blogs 📚',
+                      style: TextStyle(color: Colors.white, fontSize: 18),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      height: 300, // Adjust height as needed
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: 5, // Replace with the actual count
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              width: 200, // Adjust width as needed
+                              color: Colors.grey.shade800,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Expanded(
+                                    child: Image.asset(
+                                      'assets/images/blogs/blog${index}.jpeg',
+                                      fit: BoxFit.cover,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.all(8.0),
+                                    child: Text(
+                                      'Blog Title ${index}',
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 16),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                  Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 8.0),
+                                    child: Text(
+                                      'Short description of Blog ${index}...',
+                                      style: TextStyle(color: Colors.white60),
+                                      overflow: TextOverflow.ellipsis,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Text(
-                                'Template ${index}',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                            ),
-                          ],
-                        ),
+                          );
+                        },
                       ),
-                    );
-                  },
+                    ),
+                  ],
                 ),
               ),
+
+              // Post Feed
               PostFeed(
-                posts: [],
+                posts: _posts,
               ),
             ],
           ),
@@ -105,6 +148,11 @@ class HomePage extends StatelessWidget {
             tabBackgroundColor: Colors.grey.shade800,
             padding: EdgeInsets.all(16),
             gap: 8,
+            onTabChange: (index) {
+              if (index == 2) {
+                _navigateToPostUpload();
+              }
+            },
             tabs: [
               GButton(
                 icon: Icons.home,

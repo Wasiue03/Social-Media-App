@@ -1,79 +1,119 @@
-import 'dart:io';
-
+import 'dart:io'; // Import for File
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:image_picker/image_picker.dart'; // Import image_picker
 
-class AddPostScreen extends StatefulWidget {
-  final Function(Map<String, dynamic>) onPostAdded;
+class PostUploadScreen extends StatefulWidget {
+  final Function(Map<String, dynamic>) onPostUploaded;
 
-  AddPostScreen({required this.onPostAdded});
+  PostUploadScreen({required this.onPostUploaded});
 
   @override
-  _AddPostScreenState createState() => _AddPostScreenState();
+  _PostUploadScreenState createState() => _PostUploadScreenState();
 }
 
-class _AddPostScreenState extends State<AddPostScreen> {
+class _PostUploadScreenState extends State<PostUploadScreen> {
   final TextEditingController _contentController = TextEditingController();
+  String? _imagePath;
+
   final ImagePicker _picker = ImagePicker();
-  XFile? _image;
 
   Future<void> _pickImage() async {
-    final XFile? pickedImage =
-        await _picker.pickImage(source: ImageSource.gallery);
-    setState(() {
-      _image = pickedImage;
-    });
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _imagePath = pickedFile.path;
+      });
+    }
   }
 
-  void _submitPost() {
-    final String content = _contentController.text;
-    if (content.isEmpty) return; // Handle empty content
+  void _uploadPost() {
+    final content = _contentController.text;
 
-    final newPost = {
-      'user': 'User ${DateTime.now().millisecondsSinceEpoch}', // Example user
-      'time': DateTime.now(),
-      'content': content,
-      'image': _image != null ? _image!.path : null, // Store image path
-    };
+    if (content.isNotEmpty) {
+      final newPost = {
+        'user': 'New User', // Replace with actual user information
+        'time': DateTime.now(),
+        'content': content,
+        'image': _imagePath,
+      };
 
-    widget.onPostAdded(newPost);
-
-    Navigator.pop(context); // Return to the feed screen
+      widget.onPostUploaded(newPost);
+      Navigator.pop(context); // Navigate back after upload
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Add Post'),
-        backgroundColor: Colors.grey.shade900,
+        title: Text('Create Post'),
+        backgroundColor: Colors.grey[900],
+        elevation: 0,
       ),
+      backgroundColor: Colors.black,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            Text(
+              'What\'s on your mind?',
+              style: TextStyle(color: Colors.white, fontSize: 20),
+            ),
+            SizedBox(height: 10),
             TextField(
               controller: _contentController,
               decoration: InputDecoration(
-                labelText: 'Post Content',
                 filled: true,
-                fillColor: Colors.grey.shade800,
-                border: OutlineInputBorder(),
+                fillColor: Colors.grey[800],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(10),
+                  borderSide: BorderSide.none,
+                ),
+                hintText: 'Enter your post content...',
+                hintStyle: TextStyle(color: Colors.white54),
               ),
               maxLines: 4,
+              style: TextStyle(color: Colors.white),
             ),
-            SizedBox(height: 16.0),
-            _image != null
-                ? Image.file(File(_image!.path))
-                : ElevatedButton(
-                    onPressed: _pickImage,
-                    child: Text('Pick an Image'),
+            SizedBox(height: 10),
+            if (_imagePath != null)
+              Container(
+                margin: EdgeInsets.symmetric(vertical: 10),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.file(
+                    File(_imagePath!),
+                    height: 200,
+                    width: double.infinity,
+                    fit: BoxFit.cover,
                   ),
-            SizedBox(height: 16.0),
+                ),
+              ),
             ElevatedButton(
-              onPressed: _submitPost,
-              child: Text('Submit Post'),
+              onPressed: _pickImage,
+              child: Text('Upload'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueGrey[700],
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+            ),
+            SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: _uploadPost,
+              child: Text('Post'),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blueAccent,
+                foregroundColor: Colors.white,
+                padding: EdgeInsets.symmetric(vertical: 15),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
             ),
           ],
         ),
