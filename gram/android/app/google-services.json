@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "670484502155",
+    "project_id": "gram-8c397",
+    "storage_bucket": "gram-8c397.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:670484502155:android:503399317944468c0ae68e",
+        "android_client_info": {
+          "package_name": "com.example.gram"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNynW6ed3wTprZ42aQI_IxiA4tch1c9Gg"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
