@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gram/Homepage/homepage.dart';
+import 'package:gram/Sign/signin.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -18,11 +20,41 @@ class _SignUpPageState extends State<SignUpPage> {
         email: _emailController.text,
         password: _passwordController.text,
       );
-      // User signed up successfully
-      print("User signed up: ${userCredential.user?.email}");
+      User? user = userCredential.user;
+
+      if (user != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+              builder: (context) => HomePage()), // Replace with your home page
+        );
+      }
     } on FirebaseAuthException catch (e) {
-      print("Error: ${e.message}");
+      _showErrorDialog(e.message ?? "An unknown error occurred.");
+    } catch (e) {
+      _showErrorDialog("An unknown error occurred.");
     }
+  }
+
+  void _showErrorDialog(String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          backgroundColor: Colors.black,
+          title: Text("Error", style: TextStyle(color: Colors.redAccent)),
+          content: Text(message, style: TextStyle(color: Colors.white)),
+          actions: <Widget>[
+            TextButton(
+              child: Text("OK", style: TextStyle(color: Colors.tealAccent)),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 
   @override
@@ -30,24 +62,51 @@ class _SignUpPageState extends State<SignUpPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Sign Up'),
+        backgroundColor: Colors.black,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(labelText: 'Email'),
+              decoration: InputDecoration(
+                labelText: 'Email',
+                hintText: 'Enter your email',
+              ),
+              keyboardType: TextInputType.emailAddress,
             ),
+            SizedBox(height: 16),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(labelText: 'Password'),
+              decoration: InputDecoration(
+                labelText: 'Password',
+                hintText: 'Enter your password',
+              ),
               obscureText: true,
             ),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: _signUp,
               child: Text('Sign Up'),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.black,
+                onPrimary: Colors.white,
+              ),
+            ),
+            SizedBox(height: 20),
+            TextButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => SignInPage()),
+                );
+              },
+              child: Text(
+                'Already have an account? Sign In',
+                style: TextStyle(color: Colors.tealAccent),
+              ),
             ),
           ],
         ),
