@@ -48,8 +48,13 @@ class _BlogWriteScreenState extends State<BlogWriteScreen> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        backgroundColor: Colors.white,
-        title: Text('Write a Blog'),
+        backgroundColor: Colors.black,
+        title: Padding(
+          padding: const EdgeInsets.only(left: 55.0),
+          child: Text(
+            'Write a Blog',
+          ),
+        ),
         foregroundColor: Colors.white,
         actions: [
           IconButton(
