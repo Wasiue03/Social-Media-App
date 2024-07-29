@@ -60,21 +60,36 @@ class _SignUpPageState extends State<SignUpPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Sign Up'),
-        backgroundColor: Colors.black,
-      ),
+      backgroundColor: Colors.black,
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            Text(
+              'Sign Up',
+              style: TextStyle(
+                color: Colors.white,
+                fontSize: 32,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 40),
             TextField(
               controller: _emailController,
               decoration: InputDecoration(
                 labelText: 'Email',
                 hintText: 'Enter your email',
+                hintStyle: TextStyle(color: Colors.white70),
+                labelStyle: TextStyle(color: Colors.white),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
               ),
+              style: TextStyle(color: Colors.white),
               keyboardType: TextInputType.emailAddress,
             ),
             SizedBox(height: 16),
@@ -83,7 +98,16 @@ class _SignUpPageState extends State<SignUpPage> {
               decoration: InputDecoration(
                 labelText: 'Password',
                 hintText: 'Enter your password',
+                hintStyle: TextStyle(color: Colors.white70),
+                labelStyle: TextStyle(color: Colors.white),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
               ),
+              style: TextStyle(color: Colors.white),
               obscureText: true,
             ),
             SizedBox(height: 20),
@@ -91,8 +115,15 @@ class _SignUpPageState extends State<SignUpPage> {
               onPressed: _signUp,
               child: Text('Sign Up'),
               style: ElevatedButton.styleFrom(
-                primary: Colors.black,
-                onPrimary: Colors.white,
+                primary: Colors.white,
+                onPrimary: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 30.0),
+                textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                shadowColor: Colors.white70,
+                elevation: 10,
               ),
             ),
             SizedBox(height: 20),
@@ -105,7 +136,8 @@ class _SignUpPageState extends State<SignUpPage> {
               },
               child: Text(
                 'Already have an account? Sign In',
-                style: TextStyle(color: Colors.tealAccent),
+                style: TextStyle(
+                    color: Colors.tealAccent, fontWeight: FontWeight.bold),
               ),
             ),
           ],

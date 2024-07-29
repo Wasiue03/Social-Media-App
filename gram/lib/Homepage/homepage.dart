@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:gram/Blogs/blog_screen.dart';
+import 'package:gram/User/user_account.dart';
 import 'package:gram/feed/add_posts.dart';
 import 'package:gram/feed/post_feed.dart';
 
@@ -28,6 +30,24 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  void _navigateToUserAccount() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => UserAccountScreen(),
+      ),
+    );
+  }
+
+  void _navigateToBlogWrite() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BlogWriteScreen(),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -40,8 +60,12 @@ class _HomePageState extends State<HomePage> {
           onPressed: () {},
         ),
         actions: [
-          CircleAvatar(
-            backgroundImage: AssetImage('assets/images/profiles/profile2.jpeg'),
+          GestureDetector(
+            onTap: _navigateToUserAccount,
+            child: CircleAvatar(
+              backgroundImage:
+                  AssetImage('assets/images/profiles/profile2.jpeg'),
+            ),
           ),
           SizedBox(width: 16),
         ],
@@ -51,22 +75,18 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Top row with profile images
-              Container(
-                height: 80,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: 5, // Replace with the actual count
-                  itemBuilder: (context, index) {
-                    return Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: CircleAvatar(
-                        backgroundImage: AssetImage(
-                            'assets/images/profiles/profile${index}.jpeg'),
-                        radius: 30,
-                      ),
-                    );
-                  },
+              // Icon for writing blogs
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    IconButton(
+                      icon: Icon(Icons.edit, color: Colors.tealAccent),
+                      onPressed: _navigateToBlogWrite,
+                      tooltip: 'Write a Blog',
+                    ),
+                  ],
                 ),
               ),
               // Trending Blogs Section
@@ -173,6 +193,7 @@ class _HomePageState extends State<HomePage> {
               GButton(
                 icon: Icons.person,
                 text: 'Profile',
+                onPressed: _navigateToUserAccount,
               ),
             ],
           ),

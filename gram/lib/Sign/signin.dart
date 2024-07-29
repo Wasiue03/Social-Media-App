@@ -59,9 +59,12 @@ class _SignInPageState extends State<SignInPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text('Sign In'),
-        backgroundColor: Colors.black,
+        title: Text('Sign In',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -73,7 +76,16 @@ class _SignInPageState extends State<SignInPage> {
               decoration: InputDecoration(
                 labelText: 'Email',
                 hintText: 'Enter your email',
+                hintStyle: TextStyle(color: Colors.white70),
+                labelStyle: TextStyle(color: Colors.white),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
               ),
+              style: TextStyle(color: Colors.white),
               keyboardType: TextInputType.emailAddress,
             ),
             SizedBox(height: 16),
@@ -82,7 +94,16 @@ class _SignInPageState extends State<SignInPage> {
               decoration: InputDecoration(
                 labelText: 'Password',
                 hintText: 'Enter your password',
+                hintStyle: TextStyle(color: Colors.white70),
+                labelStyle: TextStyle(color: Colors.white),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
               ),
+              style: TextStyle(color: Colors.white),
               obscureText: true,
             ),
             SizedBox(height: 20),
@@ -90,8 +111,15 @@ class _SignInPageState extends State<SignInPage> {
               onPressed: _signIn,
               child: Text('Sign In'),
               style: ElevatedButton.styleFrom(
-                primary: Colors.black,
-                onPrimary: Colors.white,
+                primary: Colors.white,
+                onPrimary: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 30.0),
+                textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                shadowColor: Colors.white70,
+                elevation: 10,
               ),
             ),
             SizedBox(height: 20),
@@ -104,7 +132,8 @@ class _SignInPageState extends State<SignInPage> {
               },
               child: Text(
                 'Don\'t have an account? Sign Up',
-                style: TextStyle(color: Colors.tealAccent),
+                style: TextStyle(
+                    color: Colors.tealAccent, fontWeight: FontWeight.bold),
               ),
             ),
           ],
