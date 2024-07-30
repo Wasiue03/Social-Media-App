@@ -1,6 +1,5 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:gram/Homepage/homepage.dart';
 import 'package:gram/Sign/signin.dart';
 import 'package:gram/Sign/signup.dart';
 
@@ -15,6 +14,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
         debugShowCheckedModeBanner: false,
+        themeMode: ThemeMode.dark,
         title: 'UI Design',
         theme: ThemeData(
           primarySwatch: Colors.blue,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:gram/Blogs/blog_list_screen.dart';
 import 'package:gram/Homepage/homepage.dart';
 import 'package:gram/Sign/signup.dart';
 
@@ -25,7 +26,8 @@ class _SignInPageState extends State<SignInPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => HomePage()), // Replace with your home page
+              builder: (context) =>
+                  BlogListScreen()), // Replace with your home page
         );
       }
     } on FirebaseAuthException catch (e) {

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:gram/Blogs/blog_screen.dart';
+import 'package:gram/Blogs/blog_write_screen.dart';
 import 'package:gram/User/user_account.dart';
 import 'package:gram/feed/add_posts.dart';
 import 'package:gram/feed/post_feed.dart';
