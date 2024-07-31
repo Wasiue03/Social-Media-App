@@ -1,5 +1,6 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:gram/Homepage/homepage.dart';
 import 'package:gram/Sign/signin.dart';
 import 'package:gram/Sign/signup.dart';
 
@@ -21,7 +22,7 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: '/',
         routes: {
-          '/': (context) => SignInPage(),
+          '/': (context) => HomePage(),
           '/signup': (context) => SignUpPage(),
         });
   }

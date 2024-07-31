@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
+import 'package:gram/Blogs/blog_list_screen.dart';
 import 'package:gram/Blogs/blog_write_screen.dart';
 import 'package:gram/User/user_account.dart';
 import 'package:gram/feed/add_posts.dart';
@@ -43,7 +44,16 @@ class _HomePageState extends State<HomePage> {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => BlogWriteScreen(),
+        builder: (context) => BlogListScreen(),
+      ),
+    );
+  }
+
+  void _navigateToBlogList() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BlogListScreen(),
       ),
     );
   }
@@ -75,6 +85,47 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Daily Inspiration Section
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      'Daily Inspiration 💡',
+                      style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold),
+                    ),
+                    SizedBox(height: 10),
+                    Container(
+                      height: 100,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount:
+                            5, // Replace with the actual count of inspirations
+                        itemBuilder: (context, index) {
+                          return Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              width: 150,
+                              color: Colors.grey.shade800,
+                              child: Center(
+                                child: Text(
+                                  'Inspiration ${index + 1}',
+                                  style: TextStyle(
+                                      color: Colors.white, fontSize: 16),
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
               // Icon for writing blogs
               Padding(
                 padding: const EdgeInsets.all(16.0),

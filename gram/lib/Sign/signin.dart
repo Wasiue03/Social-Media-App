@@ -26,8 +26,7 @@ class _SignInPageState extends State<SignInPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) =>
-                  BlogListScreen()), // Replace with your home page
+              builder: (context) => HomePage()), // Replace with your home page
         );
       }
     } on FirebaseAuthException catch (e) {
