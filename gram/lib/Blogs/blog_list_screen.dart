@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:gram/Blogs/blog_details_screen.dart';
+import 'package:gram/Blogs/blog_write_screen.dart';
 
 class BlogListScreen extends StatefulWidget {
   @override
@@ -9,11 +10,40 @@ class BlogListScreen extends StatefulWidget {
 class _BlogListScreenState extends State<BlogListScreen>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
+  List<Map<String, String>> blogs = [
+    {
+      'title': 'Getting my first UI/UX Design Internship',
+      'author': 'Jane Doe',
+      'date': 'June 1, 2023',
+      'time': '5 min read',
+      'image': 'assets/images/blogs/blog1.jpeg',
+    },
+    {
+      'title': 'The Worst Career Mistakes Junior UX Designers Make',
+      'author': 'John Smith',
+      'date': 'June 3, 2023',
+      'time': '4 min read',
+      'image': 'assets/images/blogs/blog2.jpeg',
+    },
+    {
+      'title': 'You\'re not Lazy, Bored or Unmotivated',
+      'author': 'Anna Johnson',
+      'date': 'June 5, 2023',
+      'time': '6 min read',
+      'image': 'assets/images/blogs/blog3.jpeg',
+    },
+  ];
 
   @override
   void initState() {
     super.initState();
     _tabController = TabController(length: 3, vsync: this);
+  }
+
+  void _addNewBlog(Map<String, String> newBlog) {
+    setState(() {
+      blogs.add(newBlog);
+    });
   }
 
   @override
@@ -49,39 +79,32 @@ class _BlogListScreenState extends State<BlogListScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          BlogListTab(),
-          BlogListTab(),
-          BlogListTab(),
+          BlogListTab(blogs: blogs),
+          BlogListTab(blogs: blogs),
+          BlogListTab(blogs: blogs),
         ],
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () async {
+          final newBlog = await Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => BlogWriteScreen()),
+          );
+          if (newBlog != null) {
+            _addNewBlog(newBlog);
+          }
+        },
+        backgroundColor: Colors.tealAccent,
+        child: Icon(Icons.add, color: Colors.black),
       ),
     );
   }
 }
 
 class BlogListTab extends StatelessWidget {
-  final List<Map<String, String>> blogs = [
-    {
-      'title': 'Getting my first UI/UX Design Internship',
-      'author': 'Jane Doe',
-      'date': 'June 1, 2023',
-      'time': '5 min read',
-      'image': 'assets/images/blogs/blog1.jpeg',
-    },
-    {
-      'title': 'The Worst Career Mistakes Junior UX Designers Make',
-      'author': 'John Smith',
-      'date': 'June 3, 2023',
-      'time': '4 min read',
-      'image': 'assets/images/blogs/blog2.jpeg',
-    },
-    {
-      'title': 'You\'re not Lazy, Bored or Unmotivated',
-      'author': 'Anna Johnson',
-      'date': 'June 5, 2023',
-      'time': '6 min read',
-      'image': 'assets/images/blogs/blog3.jpeg',
-    },
-  ];
+  final List<Map<String, String>> blogs;
+
+  BlogListTab({required this.blogs});
 
   @override
   Widget build(BuildContext context) {
