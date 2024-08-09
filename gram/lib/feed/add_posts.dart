@@ -1,6 +1,8 @@
 import 'dart:io'; // Import for File
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart'; // Import image_picker
+import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PostUploadScreen extends StatefulWidget {
   final Function(Map<String, dynamic>) onPostUploaded;
@@ -14,7 +16,6 @@ class PostUploadScreen extends StatefulWidget {
 class _PostUploadScreenState extends State<PostUploadScreen> {
   final TextEditingController _contentController = TextEditingController();
   String? _imagePath;
-
   final ImagePicker _picker = ImagePicker();
 
   Future<void> _pickImage() async {
@@ -26,19 +27,51 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
     }
   }
 
-  void _uploadPost() {
+  Future<void> _uploadPost() async {
     final content = _contentController.text;
 
     if (content.isNotEmpty) {
-      final newPost = {
-        'user': 'New User', // Replace with actual user information
-        'time': DateTime.now(),
-        'content': content,
-        'image': _imagePath,
-      };
+      String? imageUrl;
 
-      widget.onPostUploaded(newPost);
-      Navigator.pop(context); // Navigate back after upload
+      // Upload image if it exists
+      if (_imagePath != null) {
+        try {
+          final storageRef = FirebaseStorage.instance
+              .ref()
+              .child('post_images')
+              .child(DateTime.now().toString() + '.jpg');
+
+          final uploadTask = storageRef.putFile(File(_imagePath!));
+          final snapshot = await uploadTask.whenComplete(() {});
+          imageUrl = await snapshot.ref.getDownloadURL();
+          print('Image uploaded: $imageUrl'); // Debugging statement
+        } catch (e) {
+          print('Error uploading image: $e');
+        }
+      }
+
+      try {
+        // Save post data to Firestore
+        await FirebaseFirestore.instance.collection('posts').add({
+          'user': 'New User', // Replace with actual user information
+          'time': Timestamp.now(),
+          'content': content,
+          'image': imageUrl,
+        });
+        print('Post submitted: $content'); // Debugging statement
+
+        widget.onPostUploaded({
+          'user': 'New User',
+          'time': Timestamp.now(),
+          'content': content,
+          'image': imageUrl,
+        });
+        Navigator.pop(context); // Navigate back after upload
+      } catch (e) {
+        print('Error saving post: $e');
+      }
+    } else {
+      print('Content is empty');
     }
   }
 
@@ -92,10 +125,10 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
               ),
             ElevatedButton(
               onPressed: _pickImage,
-              child: Text('Upload'),
+              child: Text('Upload Image'),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueGrey[700],
-                foregroundColor: Colors.white,
+                primary: Colors.blueGrey[700],
+                onPrimary: Colors.white,
                 padding: EdgeInsets.symmetric(vertical: 15),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),

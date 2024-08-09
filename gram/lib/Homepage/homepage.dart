@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:gram/Blogs/blog_list_screen.dart';
-import 'package:gram/Blogs/blog_write_screen.dart';
 import 'package:gram/User/user_account.dart';
 import 'package:gram/feed/add_posts.dart';
 import 'package:gram/feed/post_feed.dart';
@@ -36,15 +35,6 @@ class _HomePageState extends State<HomePage> {
       context,
       MaterialPageRoute(
         builder: (context) => UserAccountScreen(),
-      ),
-    );
-  }
-
-  void _navigateToBlogWrite() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => BlogWriteScreen(),
       ),
     );
   }
@@ -126,18 +116,28 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              // Icon for writing blogs
+              // Button for viewing blogs
               Padding(
                 padding: const EdgeInsets.all(16.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: [
-                    IconButton(
-                      icon: Icon(Icons.edit, color: Colors.tealAccent),
-                      onPressed: _navigateToBlogWrite,
-                      tooltip: 'Write a Blog',
+                child: Center(
+                  child: ElevatedButton.icon(
+                    style: ElevatedButton.styleFrom(
+                      primary: Colors.tealAccent, // Button color
+                      onPrimary: Colors.black, // Text and icon color
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(30),
+                      ),
                     ),
-                  ],
+                    icon: Icon(Icons.library_books),
+                    label: Text(
+                      'Explore Blogs',
+                      style:
+                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                    ),
+                    onPressed: _navigateToBlogList,
+                  ),
                 ),
               ),
               // Trending Blogs Section

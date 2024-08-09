@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gram/Blogs/blog_details_screen.dart';
 import 'package:gram/Blogs/blog_write_screen.dart';
 
@@ -10,29 +11,6 @@ class BlogListScreen extends StatefulWidget {
 class _BlogListScreenState extends State<BlogListScreen>
     with SingleTickerProviderStateMixin {
   TabController? _tabController;
-  List<Map<String, String>> blogs = [
-    {
-      'title': 'Getting my first UI/UX Design Internship',
-      'author': 'Jane Doe',
-      'date': 'June 1, 2023',
-      'time': '5 min read',
-      'image': 'assets/images/blogs/blog1.jpeg',
-    },
-    {
-      'title': 'The Worst Career Mistakes Junior UX Designers Make',
-      'author': 'John Smith',
-      'date': 'June 3, 2023',
-      'time': '4 min read',
-      'image': 'assets/images/blogs/blog2.jpeg',
-    },
-    {
-      'title': 'You\'re not Lazy, Bored or Unmotivated',
-      'author': 'Anna Johnson',
-      'date': 'June 5, 2023',
-      'time': '6 min read',
-      'image': 'assets/images/blogs/blog3.jpeg',
-    },
-  ];
 
   @override
   void initState() {
@@ -42,7 +20,7 @@ class _BlogListScreenState extends State<BlogListScreen>
 
   void _addNewBlog(Map<String, String> newBlog) {
     setState(() {
-      blogs.add(newBlog);
+      // Handle adding a new blog
     });
   }
 
@@ -79,9 +57,9 @@ class _BlogListScreenState extends State<BlogListScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          BlogListTab(blogs: blogs),
-          BlogListTab(blogs: blogs),
-          BlogListTab(blogs: blogs),
+          BlogListTab(),
+          BlogListTab(),
+          BlogListTab(),
         ],
       ),
       floatingActionButton: FloatingActionButton(
@@ -102,48 +80,70 @@ class _BlogListScreenState extends State<BlogListScreen>
 }
 
 class BlogListTab extends StatelessWidget {
-  final List<Map<String, String>> blogs;
-
-  BlogListTab({required this.blogs});
+  Future<List<Map<String, dynamic>>> _fetchBlogs() async {
+    final firestore = FirebaseFirestore.instance;
+    final snapshot = await firestore.collection('blogs').get();
+    return snapshot.docs.map((doc) => doc.data()).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return ListView.builder(
-      itemCount: blogs.length,
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => BlogDetailScreen(
-                  title: blogs[index]['title']!,
-                  author: blogs[index]['author']!,
-                  date: blogs[index]['date']!,
-                  time: blogs[index]['time']!,
-                  content: 'This is the content of the blog post.',
-                  imageUrl: blogs[index]['image']!,
+    return FutureBuilder<List<Map<String, dynamic>>>(
+      future: _fetchBlogs(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        }
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+        if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('No blogs available'));
+        }
+
+        final blogs = snapshot.data!;
+
+        return ListView.builder(
+          itemCount: blogs.length,
+          itemBuilder: (context, index) {
+            final blog = blogs[index];
+            return GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => BlogDetailScreen(
+                      title: blog['title'] ?? 'No Title',
+                      author: blog['author'] ?? 'No Author',
+                      date: blog['date'] ?? 'No Date',
+                      time: blog['time'] ?? 'No Time',
+                      content: blog['content'] ?? 'No Content',
+                      imageUrl: blog['image'] ?? 'assets/images/default.png',
+                    ),
+                  ),
+                );
+              },
+              child: Card(
+                color: Colors.grey.shade900,
+                child: ListTile(
+                  leading: Image.network(
+                      blog['image'] ?? 'assets/images/default.png'),
+                  title: Text(blog['title'] ?? 'No Title',
+                      style: TextStyle(color: Colors.white)),
+                  subtitle: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(blog['author'] ?? 'No Author',
+                          style: TextStyle(color: Colors.white60)),
+                      Text(
+                          '${blog['date'] ?? 'No Date'} • ${blog['time'] ?? 'No Time'}',
+                          style: TextStyle(color: Colors.white60)),
+                    ],
+                  ),
                 ),
               ),
             );
           },
-          child: Card(
-            color: Colors.grey.shade900,
-            child: ListTile(
-              leading: Image.asset(blogs[index]['image']!),
-              title: Text(blogs[index]['title']!,
-                  style: TextStyle(color: Colors.white)),
-              subtitle: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(blogs[index]['author']!,
-                      style: TextStyle(color: Colors.white60)),
-                  Text('${blogs[index]['date']} • ${blogs[index]['time']}',
-                      style: TextStyle(color: Colors.white60)),
-                ],
-              ),
-            ),
-          ),
         );
       },
     );
