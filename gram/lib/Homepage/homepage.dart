@@ -55,10 +55,6 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.menu),
-          onPressed: () {},
-        ),
         actions: [
           GestureDetector(
             onTap: _navigateToUserAccount,
@@ -75,130 +71,43 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Daily Inspiration Section
+              // Stories Section
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Daily Inspiration 💡',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 10),
                     Container(
                       height: 100,
-                      child: ListView.builder(
+                      child: ListView(
                         scrollDirection: Axis.horizontal,
-                        itemCount:
-                            5, // Replace with the actual count of inspirations
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              width: 150,
-                              color: Colors.grey.shade800,
-                              child: Center(
-                                child: Text(
-                                  'Inspiration ${index + 1}',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 16),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
+                        children: [
+                          _buildStoryItem('Add your story',
+                              'assets/images/add_story.png', true),
+                          _buildStoryItem('Sophia Larson',
+                              'assets/images/story1.png', false),
+                          _buildStoryItem('Georgia Rian',
+                              'assets/images/story2.png', false),
+                          // Add more stories as needed
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
-              // Button for viewing blogs
+
+              // Following and Discover Buttons
               Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Center(
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.tealAccent, // Button color
-                      onPrimary: Colors.black, // Text and icon color
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    icon: Icon(Icons.library_books),
-                    label: Text(
-                      'Explore Blogs',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    onPressed: _navigateToBlogList,
-                  ),
-                ),
-              ),
-              // Trending Blogs Section
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
-                      'Trending Blogs 📚',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                    SizedBox(height: 10),
-                    Container(
-                      height: 300, // Adjust height as needed
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 5, // Replace with the actual count
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              width: 200, // Adjust width as needed
-                              color: Colors.grey.shade800,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: Image.asset(
-                                      'assets/images/blogs/blog${index}.jpeg',
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Blog Title ${index}',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 16),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
-                                    child: Text(
-                                      'Short description of Blog ${index}...',
-                                      style: TextStyle(color: Colors.white60),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                    _buildToggleButton('Following', true),
+                    _buildToggleButton('Discover', false),
                   ],
                 ),
               ),
+              SizedBox(height: 16),
 
               // Post Feed
               PostFeed(
@@ -247,6 +156,58 @@ class _HomePageState extends State<HomePage> {
                 onPressed: _navigateToUserAccount,
               ),
             ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStoryItem(String title, String imagePath, bool isAddStory) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
+      child: Column(
+        children: [
+          CircleAvatar(
+            radius: 30,
+            backgroundColor:
+                isAddStory ? Colors.grey.shade800 : Colors.transparent,
+            backgroundImage: AssetImage(imagePath),
+            child: isAddStory
+                ? Icon(
+                    Icons.add,
+                    color: Colors.white,
+                    size: 30,
+                  )
+                : null,
+          ),
+          SizedBox(height: 4),
+          Text(
+            title,
+            style: TextStyle(color: Colors.white, fontSize: 12),
+            overflow: TextOverflow.ellipsis,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildToggleButton(String text, bool isSelected) {
+    return Expanded(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            primary: isSelected ? Colors.yellow : Colors.grey.shade800,
+            onPrimary: Colors.black,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+          onPressed: () {},
+          child: Text(
+            text,
+            style: TextStyle(
+                color: isSelected ? Colors.black : Colors.white, fontSize: 16),
           ),
         ),
       ),
