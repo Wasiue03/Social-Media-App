@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gram/Homepage/homepage.dart';
 import 'package:gram/Sign/signin.dart';
 
@@ -10,8 +11,11 @@ class SignUpPage extends StatefulWidget {
 
 class _SignUpPageState extends State<SignUpPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
 
   Future<void> _signUp() async {
     try {
@@ -23,6 +27,8 @@ class _SignUpPageState extends State<SignUpPage> {
       User? user = userCredential.user;
 
       if (user != null) {
+        await _saveUserDetails(user);
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
@@ -33,6 +39,20 @@ class _SignUpPageState extends State<SignUpPage> {
       _showErrorDialog(e.message ?? "An unknown error occurred.");
     } catch (e) {
       _showErrorDialog("An unknown error occurred.");
+    }
+  }
+
+  Future<void> _saveUserDetails(User user) async {
+    try {
+      await _firestore.collection('users').doc(user.uid).set({
+        'uid': user.uid,
+        'email': user.email,
+        'username': _usernameController.text,
+        'profileImage': '', // You can set a default or empty profile image here
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      _showErrorDialog("Failed to save user details: $e");
     }
   }
 
@@ -75,6 +95,23 @@ class _SignUpPageState extends State<SignUpPage> {
               ),
             ),
             SizedBox(height: 40),
+            TextField(
+              controller: _usernameController,
+              decoration: InputDecoration(
+                labelText: 'Username',
+                hintText: 'Enter your username',
+                hintStyle: TextStyle(color: Colors.white70),
+                labelStyle: TextStyle(color: Colors.white),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+              ),
+              style: TextStyle(color: Colors.white),
+            ),
+            SizedBox(height: 16),
             TextField(
               controller: _emailController,
               decoration: InputDecoration(

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:gram/Blogs/blog_list_screen.dart';
 import 'package:gram/User/user_account.dart';
 import 'package:gram/feed/add_posts.dart';
 import 'package:gram/feed/post_feed.dart';
+import 'package:gram/Sign/signin.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -48,6 +50,15 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  Future<void> _logout() async {
+    await FirebaseAuth.instance.signOut();
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (context) => SignInPage()),
+      (Route<dynamic> route) => false,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,6 +76,43 @@ class _HomePageState extends State<HomePage> {
           ),
           SizedBox(width: 16),
         ],
+      ),
+      drawer: Drawer(
+        backgroundColor: Colors.black,
+        child: ListView(
+          children: <Widget>[
+            UserAccountsDrawerHeader(
+              accountName:
+                  Text("Username", style: TextStyle(color: Colors.white)),
+              accountEmail: Text("user@example.com",
+                  style: TextStyle(color: Colors.white)),
+              currentAccountPicture: CircleAvatar(
+                backgroundImage:
+                    AssetImage('assets/images/profiles/profile2.jpeg'),
+              ),
+              decoration: BoxDecoration(
+                color: Colors.grey.shade900,
+              ),
+            ),
+            ListTile(
+              leading: Icon(Icons.home, color: Colors.white),
+              title: Text("Home", style: TextStyle(color: Colors.white)),
+              onTap: () {
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              leading: Icon(Icons.person, color: Colors.white),
+              title: Text("Profile", style: TextStyle(color: Colors.white)),
+              onTap: _navigateToUserAccount,
+            ),
+            ListTile(
+              leading: Icon(Icons.logout, color: Colors.white),
+              title: Text("Logout", style: TextStyle(color: Colors.white)),
+              onTap: _logout,
+            ),
+          ],
+        ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
@@ -110,9 +158,7 @@ class _HomePageState extends State<HomePage> {
               SizedBox(height: 16),
 
               // Post Feed
-              PostFeed(
-                posts: _posts,
-              ),
+              PostFeed(),
             ],
           ),
         ),
