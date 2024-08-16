@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PostFeed extends StatefulWidget {
   final List<Map<String, dynamic>> posts;
@@ -45,6 +46,16 @@ class _PostFeedState extends State<PostFeed> {
             itemCount: posts.length,
             itemBuilder: (context, index) {
               final post = posts[index];
+              DateTime postTime;
+
+              if (post['time'] is Timestamp) {
+                postTime = (post['time'] as Timestamp).toDate();
+              } else if (post['time'] is DateTime) {
+                postTime = post['time'];
+              } else {
+                postTime = DateTime.now(); // Fallback to current time
+              }
+
               return Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Card(
@@ -57,7 +68,7 @@ class _PostFeedState extends State<PostFeed> {
                             color: Colors.white, size: 40),
                         title: Text(post['user'],
                             style: TextStyle(color: Colors.white)),
-                        subtitle: Text(getTimeAgo(post['time']),
+                        subtitle: Text(getTimeAgo(postTime),
                             style: TextStyle(color: Colors.white60)),
                         trailing: Icon(Icons.more_vert, color: Colors.white),
                       ),

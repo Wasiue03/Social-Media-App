@@ -1,4 +1,4 @@
-import 'dart:io'; // Import for File
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
@@ -17,6 +17,7 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
   final TextEditingController _contentController = TextEditingController();
   String? _imagePath;
   final ImagePicker _picker = ImagePicker();
+  bool _isUploading = false;
 
   Future<void> _pickImage() async {
     final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
@@ -28,11 +29,14 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
   }
 
   Future<void> _uploadPost() async {
+    setState(() {
+      _isUploading = true;
+    });
+
     final content = _contentController.text;
+    String? imageUrl;
 
     if (content.isNotEmpty) {
-      String? imageUrl;
-
       // Upload image if it exists
       if (_imagePath != null) {
         try {
@@ -44,28 +48,27 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
           final uploadTask = storageRef.putFile(File(_imagePath!));
           final snapshot = await uploadTask.whenComplete(() {});
           imageUrl = await snapshot.ref.getDownloadURL();
-          print('Image uploaded: $imageUrl'); // Debugging statement
+          print('Image uploaded: $imageUrl');
         } catch (e) {
           print('Error uploading image: $e');
         }
       }
 
+      // Save post data to Firestore
       try {
-        // Save post data to Firestore
-        await FirebaseFirestore.instance.collection('posts').add({
+        final postRef = FirebaseFirestore.instance.collection('posts').doc();
+        final post = {
           'user': 'New User', // Replace with actual user information
           'time': Timestamp.now(),
           'content': content,
           'image': imageUrl,
-        });
-        print('Post submitted: $content'); // Debugging statement
+          'postId': postRef.id, // Storing the document ID
+        };
 
-        widget.onPostUploaded({
-          'user': 'New User',
-          'time': Timestamp.now(),
-          'content': content,
-          'image': imageUrl,
-        });
+        await postRef.set(post);
+        widget.onPostUploaded(post);
+
+        print('Post submitted: $content');
         Navigator.pop(context); // Navigate back after upload
       } catch (e) {
         print('Error saving post: $e');
@@ -73,6 +76,10 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
     } else {
       print('Content is empty');
     }
+
+    setState(() {
+      _isUploading = false;
+    });
   }
 
   @override
@@ -137,8 +144,11 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
             ),
             SizedBox(height: 20),
             ElevatedButton(
-              onPressed: _uploadPost,
-              child: Text('Post'),
+              onPressed: _isUploading ? null : _uploadPost,
+              child: _isUploading
+                  ? CircularProgressIndicator(
+                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
+                  : Text('Post'),
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.blueAccent,
                 foregroundColor: Colors.white,
