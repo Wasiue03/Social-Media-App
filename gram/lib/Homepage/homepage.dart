@@ -1,11 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:gram/Blogs/blog_list_screen.dart';
-import 'package:gram/User/user_account.dart';
-import 'package:gram/feed/add_posts.dart';
+import 'package:gram/Universes/universes_screen.dart';
 import 'package:gram/feed/post_feed.dart';
-import 'package:gram/Sign/signin.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -13,49 +8,85 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Map<String, dynamic>> _posts = [];
-
-  void _addPost(Map<String, dynamic> post) {
-    setState(() {
-      _posts.add(post);
-    });
+  // Method to navigate to user account (already existing in your code)
+  void _navigateToUserAccount() {
+    // Navigate to the user account screen
   }
 
-  void _navigateToPostUpload() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PostUploadScreen(
-          onPostUploaded: _addPost,
+  // Method to build the toggle buttons for Following and Discover
+  Widget _buildToggleButton(String text, bool isSelected) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {
+          // Handle toggle button tap
+        },
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: isSelected ? Colors.white : Colors.grey.shade800,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Center(
+            child: Text(
+              text,
+              style: TextStyle(
+                color: isSelected ? Colors.black : Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 
-  void _navigateToUserAccount() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => UserAccountScreen(),
+  // Method to build a universe card widget
+  Widget _buildUniverseCard(
+      String username, String imagePath, String universeDescription) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => UniverseScreen(
+              username: username,
+              imagePath: imagePath,
+              description: universeDescription,
+            ),
+          ),
+        );
+      },
+      child: Card(
+        color: Colors.grey.shade800,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 30,
+                backgroundImage: AssetImage(imagePath),
+              ),
+              SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    username,
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    universeDescription,
+                    style: TextStyle(color: Colors.white70, fontSize: 12),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
-    );
-  }
-
-  void _navigateToBlogList() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => BlogListScreen(),
-      ),
-    );
-  }
-
-  Future<void> _logout() async {
-    await FirebaseAuth.instance.signOut();
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (context) => SignInPage()),
-      (Route<dynamic> route) => false,
     );
   }
 
@@ -80,37 +111,20 @@ class _HomePageState extends State<HomePage> {
       drawer: Drawer(
         backgroundColor: Colors.black,
         child: ListView(
-          children: <Widget>[
-            UserAccountsDrawerHeader(
-              accountName:
-                  Text("Username", style: TextStyle(color: Colors.white)),
-              accountEmail: Text("user@example.com",
-                  style: TextStyle(color: Colors.white)),
-              currentAccountPicture: CircleAvatar(
-                backgroundImage:
-                    AssetImage('assets/images/profiles/profile2.jpeg'),
-              ),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade900,
-              ),
+          children: [
+            DrawerHeader(
+              child: Text('Menu', style: TextStyle(color: Colors.white)),
+              decoration: BoxDecoration(color: Colors.black),
             ),
             ListTile(
-              leading: Icon(Icons.home, color: Colors.white),
-              title: Text("Home", style: TextStyle(color: Colors.white)),
-              onTap: () {
-                Navigator.pop(context);
-              },
+              title: Text('Home', style: TextStyle(color: Colors.white)),
+              onTap: () {},
             ),
             ListTile(
-              leading: Icon(Icons.person, color: Colors.white),
-              title: Text("Profile", style: TextStyle(color: Colors.white)),
-              onTap: _navigateToUserAccount,
+              title: Text('Settings', style: TextStyle(color: Colors.white)),
+              onTap: () {},
             ),
-            ListTile(
-              leading: Icon(Icons.logout, color: Colors.white),
-              title: Text("Logout", style: TextStyle(color: Colors.white)),
-              onTap: _logout,
-            ),
+            // Add more drawer items here
           ],
         ),
       ),
@@ -119,24 +133,30 @@ class _HomePageState extends State<HomePage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Stories Section
+              // Universe Cards Section
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
-                      height: 100,
+                      height: 120,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
                         children: [
-                          _buildStoryItem('Add your story',
-                              'assets/images/add_story.png', true),
-                          _buildStoryItem('Sophia Larson',
-                              'assets/images/story1.png', false),
-                          _buildStoryItem('Georgia Rian',
-                              'assets/images/story2.png', false),
-                          // Add more stories as needed
+                          _buildUniverseCard(
+                              'Sophia Larson',
+                              'assets/images/profile1.jpeg',
+                              'Loves traveling and photography.'),
+                          _buildUniverseCard(
+                              'Georgia Rian',
+                              'assets/images/profile2.jpeg',
+                              'Tech enthusiast and bookworm.'),
+                          _buildUniverseCard(
+                              'Alex Johnson',
+                              'assets/images/profile3.jpeg',
+                              'Music lover and foodie.'),
+                          // Add more universe cards as needed
                         ],
                       ),
                     ),
@@ -163,99 +183,35 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        color: Colors.black,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
-          child: GNav(
-            backgroundColor: Colors.black,
-            color: Colors.white,
-            activeColor: Colors.white,
-            tabBackgroundColor: Colors.grey.shade800,
-            padding: EdgeInsets.all(16),
-            gap: 8,
-            onTabChange: (index) {
-              if (index == 2) {
-                _navigateToPostUpload();
-              }
-            },
-            tabs: [
-              GButton(
-                icon: Icons.home,
-                text: 'Home',
-              ),
-              GButton(
-                icon: Icons.search,
-                text: 'Search',
-              ),
-              GButton(
-                icon: Icons.add,
-                text: 'Add',
-              ),
-              GButton(
-                icon: Icons.favorite,
-                text: 'Favorites',
-              ),
-              GButton(
-                icon: Icons.person,
-                text: 'Profile',
-                onPressed: _navigateToUserAccount,
-              ),
-            ],
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.black,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home, color: Colors.white),
+            label: 'Home',
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildStoryItem(String title, String imagePath, bool isAddStory) {
-    return Padding(
-      padding: const EdgeInsets.only(right: 8.0),
-      child: Column(
-        children: [
-          CircleAvatar(
-            radius: 30,
-            backgroundColor:
-                isAddStory ? Colors.grey.shade800 : Colors.transparent,
-            backgroundImage: AssetImage(imagePath),
-            child: isAddStory
-                ? Icon(
-                    Icons.add,
-                    color: Colors.white,
-                    size: 30,
-                  )
-                : null,
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search, color: Colors.white),
+            label: 'Search',
           ),
-          SizedBox(height: 4),
-          Text(
-            title,
-            style: TextStyle(color: Colors.white, fontSize: 12),
-            overflow: TextOverflow.ellipsis,
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_circle_outline, color: Colors.white),
+            label: 'Add',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite, color: Colors.white),
+            label: 'Favorites',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person, color: Colors.white),
+            label: 'Profile',
           ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildToggleButton(String text, bool isSelected) {
-    return Expanded(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            primary: isSelected ? Colors.yellow : Colors.grey.shade800,
-            onPrimary: Colors.black,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(20),
-            ),
-          ),
-          onPressed: () {},
-          child: Text(
-            text,
-            style: TextStyle(
-                color: isSelected ? Colors.black : Colors.white, fontSize: 16),
-          ),
-        ),
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey,
+        onTap: (index) {
+          // Handle navigation based on the tapped index
+        },
       ),
     );
   }
