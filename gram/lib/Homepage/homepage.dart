@@ -146,15 +146,15 @@ class _HomePageState extends State<HomePage> {
                         children: [
                           _buildUniverseCard(
                               'Sophia Larson',
-                              'assets/images/profile1.jpeg',
+                              'assets/images/profiles/profile1.jpeg',
                               'Loves traveling and photography.'),
                           _buildUniverseCard(
                               'Georgia Rian',
-                              'assets/images/profile2.jpeg',
+                              'assets/images/profiles/profile2.jpeg',
                               'Tech enthusiast and bookworm.'),
                           _buildUniverseCard(
                               'Alex Johnson',
-                              'assets/images/profile3.jpeg',
+                              'assets/images/profiles/profile3.jpeg',
                               'Music lover and foodie.'),
                           // Add more universe cards as needed
                         ],
