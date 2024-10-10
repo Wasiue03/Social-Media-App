@@ -80,8 +80,7 @@ class _BlogWriteScreenState extends State<BlogWriteScreen> {
                   child: ElevatedButton(
                     onPressed: _submitBlog,
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.tealAccent,
-                      onPrimary: Colors.black,
+                      foregroundColor: Colors.tealAccent,
                       padding:
                           EdgeInsets.symmetric(horizontal: 60, vertical: 15),
                       textStyle:

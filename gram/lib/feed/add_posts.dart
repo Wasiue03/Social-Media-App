@@ -134,8 +134,7 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
               onPressed: _pickImage,
               child: Text('Upload Image'),
               style: ElevatedButton.styleFrom(
-                primary: Colors.blueGrey[700],
-                onPrimary: Colors.white,
+                foregroundColor: Colors.blueGrey[700],
                 padding: EdgeInsets.symmetric(vertical: 15),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(10),
