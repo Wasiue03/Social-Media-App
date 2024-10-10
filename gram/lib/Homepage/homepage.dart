@@ -8,17 +8,17 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  // Method to navigate to user account (already existing in your code)
+ 
   void _navigateToUserAccount() {
-    // Navigate to the user account screen
+    
   }
 
-  // Method to build the toggle buttons for Following and Discover
+  
   Widget _buildToggleButton(String text, bool isSelected) {
     return Expanded(
       child: GestureDetector(
         onTap: () {
-          // Handle toggle button tap
+          
         },
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 10),
