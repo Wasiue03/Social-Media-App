@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:gram/Universes/universes_screen.dart';
 import 'package:gram/feed/post_feed.dart';
+import 'package:gram/feed/add_posts.dart'; // Import for the PostUploadScreen
 
 class HomePage extends StatefulWidget {
   @override
@@ -8,18 +9,19 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
- 
-  void _navigateToUserAccount() {
-    
-  }
+  int _currentIndex = 0;
 
-  
+  final List<Widget> _screens = [
+    PostFeed(), // Home Screen
+    PostUploadScreen(onPostUploaded: (post) {}), // Add Post Screen
+  ];
+
+  void _navigateToUserAccount() {}
+
   Widget _buildToggleButton(String text, bool isSelected) {
     return Expanded(
       child: GestureDetector(
-        onTap: () {
-          
-        },
+        onTap: () {},
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
@@ -118,13 +120,19 @@ class _HomePageState extends State<HomePage> {
             ),
             ListTile(
               title: Text('Home', style: TextStyle(color: Colors.white)),
-              onTap: () {},
+              onTap: () {
+                setState(() {
+                  _currentIndex = 0;
+                });
+                Navigator.pop(context); // Close drawer
+              },
             ),
             ListTile(
               title: Text('Settings', style: TextStyle(color: Colors.white)),
-              onTap: () {},
+              onTap: () {
+                // Navigate to Settings screen
+              },
             ),
-            // Add more drawer items here
           ],
         ),
       ),
@@ -185,6 +193,8 @@ class _HomePageState extends State<HomePage> {
       ),
       bottomNavigationBar: BottomNavigationBar(
         backgroundColor: Colors.black,
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _currentIndex,
         items: [
           BottomNavigationBarItem(
             icon: Icon(Icons.home, color: Colors.white),
@@ -210,7 +220,19 @@ class _HomePageState extends State<HomePage> {
         selectedItemColor: Colors.white,
         unselectedItemColor: Colors.grey,
         onTap: (index) {
-          // Handle navigation based on the tapped index
+          setState(() {
+            _currentIndex = index; // Update current screen index
+          });
+
+          // Navigate to the Add Post screen
+          if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      PostUploadScreen(onPostUploaded: (post) {})),
+            );
+          }
         },
       ),
     );

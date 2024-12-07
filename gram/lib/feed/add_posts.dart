@@ -89,6 +89,19 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
         title: Text('Create Post'),
         backgroundColor: Colors.grey[900],
         elevation: 0,
+        actions: [
+          // Post button at the top right corner
+          TextButton(
+            onPressed: _isUploading ? null : _uploadPost,
+            child: _isUploading
+                ? CircularProgressIndicator(
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
+                : Text(
+                    'Post',
+                    style: TextStyle(color: Colors.white, fontSize: 18),
+                  ),
+          ),
+        ],
       ),
       backgroundColor: Colors.black,
       body: Padding(
@@ -101,22 +114,46 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),
             SizedBox(height: 10),
-            TextField(
-              controller: _contentController,
-              decoration: InputDecoration(
-                filled: true,
-                fillColor: Colors.grey[800],
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(10),
-                  borderSide: BorderSide.none,
-                ),
-                hintText: 'Enter your post content...',
-                hintStyle: TextStyle(color: Colors.white54),
+            // Content box with image upload button inside
+            Container(
+              decoration: BoxDecoration(
+                color: Colors.grey[800],
+                borderRadius: BorderRadius.circular(10),
               ),
-              maxLines: 4,
-              style: TextStyle(color: Colors.white),
+              padding: EdgeInsets.all(10),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  TextField(
+                    controller: _contentController,
+                    decoration: InputDecoration(
+                      filled: true,
+                      fillColor: Colors.transparent,
+                      border: InputBorder.none,
+                      hintText: 'Enter your post content...',
+                      hintStyle: TextStyle(color: Colors.white54),
+                    ),
+                    maxLines: 4,
+                    style: TextStyle(color: Colors.white),
+                  ),
+                  SizedBox(height: 10),
+                  // Image upload button inside the content box with "+" icon
+                  Align(
+                    alignment: Alignment.centerRight,
+                    child: IconButton(
+                      icon: Icon(
+                        Icons.add,
+                        color: Colors.blueAccent,
+                        size: 30,
+                      ),
+                      onPressed: _pickImage,
+                    ),
+                  ),
+                ],
+              ),
             ),
-            SizedBox(height: 10),
+            SizedBox(height: 20),
+            // If an image is picked, display it
             if (_imagePath != null)
               Container(
                 margin: EdgeInsets.symmetric(vertical: 10),
@@ -130,33 +167,6 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
                   ),
                 ),
               ),
-            ElevatedButton(
-              onPressed: _pickImage,
-              child: Text('Upload Image'),
-              style: ElevatedButton.styleFrom(
-                foregroundColor: Colors.blueGrey[700],
-                padding: EdgeInsets.symmetric(vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _isUploading ? null : _uploadPost,
-              child: _isUploading
-                  ? CircularProgressIndicator(
-                      valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
-                  : Text('Post'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.blueAccent,
-                foregroundColor: Colors.white,
-                padding: EdgeInsets.symmetric(vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
-            ),
           ],
         ),
       ),
