@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:gram/Blogs/blog_list_screen.dart';
 import 'package:gram/Homepage/homepage.dart';
 import 'package:gram/Sign/signup.dart';
 
@@ -112,8 +111,8 @@ class _SignInPageState extends State<SignInPage> {
               onPressed: _signIn,
               child: Text('Sign In'),
               style: ElevatedButton.styleFrom(
-                primary: Colors.white,
-                onPrimary: Colors.black,
+                foregroundColor: Colors.black,
+                backgroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0),
                 ),

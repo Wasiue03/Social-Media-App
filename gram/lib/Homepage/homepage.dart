@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:gram/Blogs/blog_list_screen.dart';
-import 'package:gram/User/user_account.dart';
-import 'package:gram/feed/add_posts.dart';
+import 'package:gram/Universes/universes_screen.dart';
 import 'package:gram/feed/post_feed.dart';
+import 'package:gram/feed/add_posts.dart'; // Import for the PostUploadScreen
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,39 +9,85 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Map<String, dynamic>> _posts = [];
+  int _currentIndex = 0;
 
-  void _addPost(Map<String, dynamic> post) {
-    setState(() {
-      _posts.add(post);
-    });
-  }
+  final List<Widget> _screens = [
+    PostFeed(), // Home Screen
+    PostUploadScreen(onPostUploaded: (post) {}), // Add Post Screen
+  ];
 
-  void _navigateToPostUpload() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PostUploadScreen(
-          onPostUploaded: _addPost,
+  void _navigateToUserAccount() {}
+
+  Widget _buildToggleButton(String text, bool isSelected) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: () {},
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: isSelected ? Colors.white : Colors.grey.shade800,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Center(
+            child: Text(
+              text,
+              style: TextStyle(
+                color: isSelected ? Colors.black : Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 
-  void _navigateToUserAccount() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => UserAccountScreen(),
-      ),
-    );
-  }
-
-  void _navigateToBlogList() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => BlogListScreen(),
+  // Method to build a universe card widget
+  Widget _buildUniverseCard(
+      String username, String imagePath, String universeDescription) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => UniverseScreen(
+              username: username,
+              imagePath: imagePath,
+              description: universeDescription,
+            ),
+          ),
+        );
+      },
+      child: Card(
+        color: Colors.grey.shade800,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 30,
+                backgroundImage: AssetImage(imagePath),
+              ),
+              SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    username,
+                    style: TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  SizedBox(height: 4),
+                  Text(
+                    universeDescription,
+                    style: TextStyle(color: Colors.white70, fontSize: 12),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -55,10 +99,6 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.menu),
-          onPressed: () {},
-        ),
         actions: [
           GestureDetector(
             onTap: _navigateToUserAccount,
@@ -70,185 +110,130 @@ class _HomePageState extends State<HomePage> {
           SizedBox(width: 16),
         ],
       ),
+      drawer: Drawer(
+        backgroundColor: Colors.black,
+        child: ListView(
+          children: [
+            DrawerHeader(
+              child: Text('Menu', style: TextStyle(color: Colors.white)),
+              decoration: BoxDecoration(color: Colors.black),
+            ),
+            ListTile(
+              title: Text('Home', style: TextStyle(color: Colors.white)),
+              onTap: () {
+                setState(() {
+                  _currentIndex = 0;
+                });
+                Navigator.pop(context); // Close drawer
+              },
+            ),
+            ListTile(
+              title: Text('Settings', style: TextStyle(color: Colors.white)),
+              onTap: () {
+                // Navigate to Settings screen
+              },
+            ),
+          ],
+        ),
+      ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Daily Inspiration Section
+              // Universe Cards Section
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Daily Inspiration 💡',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 10),
                     Container(
-                      height: 100,
-                      child: ListView.builder(
+                      height: 120,
+                      child: ListView(
                         scrollDirection: Axis.horizontal,
-                        itemCount:
-                            5, // Replace with the actual count of inspirations
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              width: 150,
-                              color: Colors.grey.shade800,
-                              child: Center(
-                                child: Text(
-                                  'Inspiration ${index + 1}',
-                                  style: TextStyle(
-                                      color: Colors.white, fontSize: 16),
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              // Button for viewing blogs
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Center(
-                  child: ElevatedButton.icon(
-                    style: ElevatedButton.styleFrom(
-                      primary: Colors.tealAccent, // Button color
-                      onPrimary: Colors.black, // Text and icon color
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 32, vertical: 16),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(30),
-                      ),
-                    ),
-                    icon: Icon(Icons.library_books),
-                    label: Text(
-                      'Explore Blogs',
-                      style:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                    ),
-                    onPressed: _navigateToBlogList,
-                  ),
-                ),
-              ),
-              // Trending Blogs Section
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      'Trending Blogs 📚',
-                      style: TextStyle(color: Colors.white, fontSize: 18),
-                    ),
-                    SizedBox(height: 10),
-                    Container(
-                      height: 300, // Adjust height as needed
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: 5, // Replace with the actual count
-                        itemBuilder: (context, index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Container(
-                              width: 200, // Adjust width as needed
-                              color: Colors.grey.shade800,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Expanded(
-                                    child: Image.asset(
-                                      'assets/images/blogs/blog${index}.jpeg',
-                                      fit: BoxFit.cover,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.all(8.0),
-                                    child: Text(
-                                      'Blog Title ${index}',
-                                      style: TextStyle(
-                                          color: Colors.white, fontSize: 16),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                  Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 8.0),
-                                    child: Text(
-                                      'Short description of Blog ${index}...',
-                                      style: TextStyle(color: Colors.white60),
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          );
-                        },
+                        children: [
+                          _buildUniverseCard(
+                              'Sophia Larson',
+                              'assets/images/profiles/profile1.jpeg',
+                              'Loves traveling and photography.'),
+                          _buildUniverseCard(
+                              'Georgia Rian',
+                              'assets/images/profiles/profile2.jpeg',
+                              'Tech enthusiast and bookworm.'),
+                          _buildUniverseCard(
+                              'Alex Johnson',
+                              'assets/images/profiles/profile3.jpeg',
+                              'Music lover and foodie.'),
+                          // Add more universe cards as needed
+                        ],
                       ),
                     ),
                   ],
                 ),
               ),
 
-              // Post Feed
-              PostFeed(
-                posts: _posts,
+              // Following and Discover Buttons
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildToggleButton('Following', true),
+                    _buildToggleButton('Discover', false),
+                  ],
+                ),
               ),
+              SizedBox(height: 16),
+
+              // Post Feed
+              PostFeed(),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        color: Colors.black,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
-          child: GNav(
-            backgroundColor: Colors.black,
-            color: Colors.white,
-            activeColor: Colors.white,
-            tabBackgroundColor: Colors.grey.shade800,
-            padding: EdgeInsets.all(16),
-            gap: 8,
-            onTabChange: (index) {
-              if (index == 2) {
-                _navigateToPostUpload();
-              }
-            },
-            tabs: [
-              GButton(
-                icon: Icons.home,
-                text: 'Home',
-              ),
-              GButton(
-                icon: Icons.search,
-                text: 'Search',
-              ),
-              GButton(
-                icon: Icons.add,
-                text: 'Add',
-              ),
-              GButton(
-                icon: Icons.favorite,
-                text: 'Favorites',
-              ),
-              GButton(
-                icon: Icons.person,
-                text: 'Profile',
-                onPressed: _navigateToUserAccount,
-              ),
-            ],
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.black,
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _currentIndex,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home, color: Colors.white),
+            label: 'Home',
           ),
-        ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search, color: Colors.white),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_circle_outline, color: Colors.white),
+            label: 'Add',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite, color: Colors.white),
+            label: 'Favorites',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person, color: Colors.white),
+            label: 'Profile',
+          ),
+        ],
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index; // Update current screen index
+          });
+
+          // Navigate to the Add Post screen
+          if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      PostUploadScreen(onPostUploaded: (post) {})),
+            );
+          }
+        },
       ),
     );
   }
