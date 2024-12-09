@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:gram/Homepage/homepage.dart';
 import 'package:gram/Sign/signin.dart';
 import 'package:gram/Sign/signup.dart';
-import 'package:gram/email/email.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
