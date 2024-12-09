@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:gram/Drawer/Drawer.dart';
 import 'package:gram/Universes/universes_screen.dart';
 import 'package:gram/feed/post_feed.dart';
 import 'package:gram/feed/add_posts.dart'; // Import for the PostUploadScreen
@@ -15,6 +16,16 @@ class _HomePageState extends State<HomePage> {
     PostFeed(), // Home Screen
     PostUploadScreen(onPostUploaded: (post) {}), // Add Post Screen
   ];
+  void _onDrawerMenuSelected(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+
+    if (index == 1) {
+      // Handle settings navigation, if needed
+      print('Navigate to Settings');
+    }
+  }
 
   void _navigateToUserAccount() {}
 
@@ -98,6 +109,7 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
+        iconTheme: IconThemeData(color: Colors.white),
         elevation: 0,
         actions: [
           GestureDetector(
@@ -110,31 +122,11 @@ class _HomePageState extends State<HomePage> {
           SizedBox(width: 16),
         ],
       ),
-      drawer: Drawer(
-        backgroundColor: Colors.black,
-        child: ListView(
-          children: [
-            DrawerHeader(
-              child: Text('Menu', style: TextStyle(color: Colors.white)),
-              decoration: BoxDecoration(color: Colors.black),
-            ),
-            ListTile(
-              title: Text('Home', style: TextStyle(color: Colors.white)),
-              onTap: () {
-                setState(() {
-                  _currentIndex = 0;
-                });
-                Navigator.pop(context); // Close drawer
-              },
-            ),
-            ListTile(
-              title: Text('Settings', style: TextStyle(color: Colors.white)),
-              onTap: () {
-                // Navigate to Settings screen
-              },
-            ),
-          ],
-        ),
+      drawer: CustomDrawer(
+        onMenuItemSelected: _onDrawerMenuSelected,
+        onLogout: () {
+          Navigator.pushReplacementNamed(context, '/signin');
+        },
       ),
       body: SafeArea(
         child: SingleChildScrollView(
