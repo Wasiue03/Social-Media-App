@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class PostUploadScreen extends StatefulWidget {
   final Function(Map<String, dynamic>) onPostUploaded;
@@ -20,61 +21,77 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
   bool _isUploading = false;
 
   Future<void> _pickImage() async {
-    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
-    if (pickedFile != null) {
-      setState(() {
-        _imagePath = pickedFile.path;
-      });
+    try {
+      final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+      if (pickedFile != null) {
+        setState(() {
+          _imagePath = pickedFile.path;
+        });
+      }
+    } catch (e) {
+      print('Error picking image: $e');
+    }
+  }
+
+  Future<String?> _uploadImage() async {
+    if (_imagePath == null) return null;
+
+    try {
+      final storageRef = FirebaseStorage.instance
+          .ref()
+          .child('post_images')
+          .child(DateTime.now().toIso8601String() + '.jpg');
+
+      final uploadTask = storageRef.putFile(File(_imagePath!));
+      final snapshot = await uploadTask.whenComplete(() {});
+      return await snapshot.ref.getDownloadURL();
+    } catch (e) {
+      print('Error uploading image: $e');
+      return null;
     }
   }
 
   Future<void> _uploadPost() async {
+    final content = _contentController.text.trim();
+    if (content.isEmpty) {
+      _showSnackbar('Post content cannot be empty');
+      return;
+    }
+
     setState(() {
       _isUploading = true;
     });
 
-    final content = _contentController.text;
-    String? imageUrl;
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      _showSnackbar('User not authenticated');
+      setState(() {
+        _isUploading = false;
+      });
+      return;
+    }
 
-    if (content.isNotEmpty) {
-      // Upload image if it exists
-      if (_imagePath != null) {
-        try {
-          final storageRef = FirebaseStorage.instance
-              .ref()
-              .child('post_images')
-              .child(DateTime.now().toString() + '.jpg');
+    String? imageUrl = await _uploadImage();
 
-          final uploadTask = storageRef.putFile(File(_imagePath!));
-          final snapshot = await uploadTask.whenComplete(() {});
-          imageUrl = await snapshot.ref.getDownloadURL();
-          print('Image uploaded: $imageUrl');
-        } catch (e) {
-          print('Error uploading image: $e');
-        }
-      }
+    try {
+      final postRef = FirebaseFirestore.instance.collection('posts').doc();
+      final post = {
+        'username': user.displayName ?? 'Unknown User',
+        'userUid': user.uid,
+        'time': Timestamp.now(),
+        'content': content,
+        'image': imageUrl,
+        'postId': postRef.id, // Storing the document ID
+      };
 
-      // Save post data to Firestore
-      try {
-        final postRef = FirebaseFirestore.instance.collection('posts').doc();
-        final post = {
-          'user': 'New User', // Replace with actual user information
-          'time': Timestamp.now(),
-          'content': content,
-          'image': imageUrl,
-          'postId': postRef.id, // Storing the document ID
-        };
+      await postRef.set(post);
+      widget.onPostUploaded(post);
 
-        await postRef.set(post);
-        widget.onPostUploaded(post);
-
-        print('Post submitted: $content');
-        Navigator.pop(context); // Navigate back after upload
-      } catch (e) {
-        print('Error saving post: $e');
-      }
-    } else {
-      print('Content is empty');
+      _showSnackbar('Post uploaded successfully');
+      Navigator.pop(context); // Navigate back after upload
+    } catch (e) {
+      print('Error saving post: $e');
+      _showSnackbar('Failed to upload post');
     }
 
     setState(() {
@@ -82,20 +99,26 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
     });
   }
 
+  void _showSnackbar(String message) {
+    ScaffoldMessenger.of(context)
+        .showSnackBar(SnackBar(content: Text(message)));
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Create Post'),
         backgroundColor: Colors.grey[900],
         elevation: 0,
+        iconTheme: IconThemeData(color: Colors.white),
         actions: [
           // Post button at the top right corner
           TextButton(
             onPressed: _isUploading ? null : _uploadPost,
             child: _isUploading
                 ? CircularProgressIndicator(
-                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
+                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
+                  )
                 : Text(
                     'Post',
                     style: TextStyle(color: Colors.white, fontSize: 18),
@@ -104,7 +127,7 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
         ],
       ),
       backgroundColor: Colors.black,
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
