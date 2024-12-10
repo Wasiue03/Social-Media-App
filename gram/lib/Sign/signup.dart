@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gram/Homepage/homepage.dart';
-import 'package:gram/Sign/signin.dart';
+import 'package:gram/Profile/user_profile.dart';
 
 class SignUpPage extends StatefulWidget {
   @override
@@ -30,10 +30,12 @@ class _SignUpPageState extends State<SignUpPage> {
         await _saveUserDetails(user);
 
         Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-              builder: (context) => HomePage()), // Replace with your home page
-        );
+            context,
+            MaterialPageRoute(
+              builder: (context) => HomePage(),
+            )
+            // ProfileScreen(userId: user.uid)), // Navigate to ProfileScreen
+            );
       }
     } on FirebaseAuthException catch (e) {
       _showErrorDialog(e.message ?? "An unknown error occurred.");
@@ -48,7 +50,7 @@ class _SignUpPageState extends State<SignUpPage> {
         'uid': user.uid,
         'email': user.email,
         'username': _usernameController.text,
-        'profileImage': '', // You can set a default or empty profile image here
+        'profileImage': '', // Default or empty profile image
         'createdAt': FieldValue.serverTimestamp(),
       });
     } catch (e) {
@@ -161,20 +163,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 shadowColor: Colors.white70,
                 elevation: 10,
-              ),
-            ),
-            SizedBox(height: 20),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SignInPage()),
-                );
-              },
-              child: Text(
-                'Already have an account? Sign In',
-                style: TextStyle(
-                    color: Colors.tealAccent, fontWeight: FontWeight.bold),
               ),
             ),
           ],

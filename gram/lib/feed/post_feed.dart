@@ -1,8 +1,8 @@
 import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class PostFeed extends StatefulWidget {
   @override
@@ -11,47 +11,20 @@ class PostFeed extends StatefulWidget {
 
 class _PostFeedState extends State<PostFeed> {
   List<Map<String, dynamic>> posts = [];
-  String? userUid; // Store current user UID
 
   @override
   void initState() {
     super.initState();
-    _getCurrentUser(); // Fetch the current user UID
+    _fetchPosts();
   }
 
-  Future<void> _getCurrentUser() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      setState(() {
-        userUid = user.uid;
-      });
-      print('Logged-in User UID: $userUid');
-      print('Logged-in User Email: ${user.email}');
-      print('Logged-in Username: ${user.displayName}');
-      await _fetchPosts();
-    } else {
-      print('No user logged in');
-    }
-  }
-
-  // Fetch posts only for the logged-in user
   Future<void> _fetchPosts() async {
-    if (userUid == null) {
-      print('User UID is null');
-      return;
-    }
-
-    QuerySnapshot snapshot = await FirebaseFirestore.instance
-        .collection('posts')
-        .where('userUid', isEqualTo: userUid) // Match the correct field
-        .get();
-
-    print('Number of posts fetched: ${snapshot.docs.length}');
-
+    QuerySnapshot snapshot =
+        await FirebaseFirestore.instance.collection('posts').get();
     List<Map<String, dynamic>> fetchedPosts = [];
+
     for (var doc in snapshot.docs) {
       Map<String, dynamic> postData = doc.data() as Map<String, dynamic>;
-      print('Fetched Post: $postData');
       fetchedPosts.add(postData);
     }
 

@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:gram/Drawer/Drawer.dart';
+import 'package:gram/Profile/user_profile.dart';
 import 'package:gram/Universes/universes_screen.dart';
 import 'package:gram/feed/post_feed.dart';
-import 'package:gram/feed/add_posts.dart'; // Import for the PostUploadScreen
+import 'package:gram/feed/add_posts.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Import for Firebase Authentication
 
 class HomePage extends StatefulWidget {
   @override
@@ -11,11 +13,19 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _currentIndex = 0;
+  User? _currentUser; // Firebase User
+
+  @override
+  void initState() {
+    super.initState();
+    _currentUser = FirebaseAuth.instance.currentUser; // Get the current user
+  }
 
   final List<Widget> _screens = [
     PostFeed(), // Home Screen
     PostUploadScreen(onPostUploaded: (post) {}), // Add Post Screen
   ];
+
   void _onDrawerMenuSelected(int index) {
     setState(() {
       _currentIndex = index;
@@ -53,7 +63,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // Method to build a universe card widget
   Widget _buildUniverseCard(
       String username, String imagePath, String universeDescription) {
     return GestureDetector(
@@ -156,7 +165,6 @@ class _HomePageState extends State<HomePage> {
                               'Alex Johnson',
                               'assets/images/profiles/profile3.jpeg',
                               'Music lover and foodie.'),
-                          // Add more universe cards as needed
                         ],
                       ),
                     ),
@@ -224,6 +232,26 @@ class _HomePageState extends State<HomePage> {
                   builder: (context) =>
                       PostUploadScreen(onPostUploaded: (post) {})),
             );
+          }
+
+          // Navigate to Profile screen
+          if (index == 4) {
+            if (_currentUser != null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      ProfileScreen(userId: _currentUser!.uid),
+                ),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text("No user logged in."),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
           }
         },
       ),
