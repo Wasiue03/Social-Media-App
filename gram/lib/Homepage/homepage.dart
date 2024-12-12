@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:gram/Blogs/blog_list_screen.dart';
 import 'package:gram/Drawer/Drawer.dart';
 import 'package:gram/Profile/user_profile.dart';
 import 'package:gram/Universes/universes_screen.dart';
 import 'package:gram/feed/post_feed.dart';
 import 'package:gram/feed/add_posts.dart';
+
 import 'package:firebase_auth/firebase_auth.dart'; // Import for Firebase Authentication
 
 class HomePage extends StatefulWidget {
@@ -39,10 +41,10 @@ class _HomePageState extends State<HomePage> {
 
   void _navigateToUserAccount() {}
 
-  Widget _buildToggleButton(String text, bool isSelected) {
+  Widget _buildToggleButton(String text, bool isSelected, VoidCallback onTap) {
     return Expanded(
       child: GestureDetector(
-        onTap: () {},
+        onTap: onTap,
         child: Container(
           padding: EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
@@ -178,8 +180,18 @@ class _HomePageState extends State<HomePage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildToggleButton('Following', true),
-                    _buildToggleButton('Discover', false),
+                    _buildToggleButton('Following', true, () {
+                      // Handle Following button action
+                    }),
+                    _buildToggleButton('Discover', false, () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              BlogListScreen(), // Navigate to BlogsScreen
+                        ),
+                      );
+                    }),
                   ],
                 ),
               ),
