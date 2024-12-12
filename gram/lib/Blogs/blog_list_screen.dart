@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+
 import 'blog_write_screen.dart';
 import 'blog_details_screen.dart';
 
@@ -20,13 +21,28 @@ class _BlogListScreenState extends State<BlogListScreen>
   }
 
   Future<List<Map<String, dynamic>>> _fetchBlogs() async {
-    final url = Uri.parse(
-        'http://192.168.100.9:5000/get_blogs'); // Replace with your Flask server IP
+    final url =
+        Uri.parse('http://192.168.100.9:5000/get_blogs'); // Flask server
     final response = await http.get(url);
 
     if (response.statusCode == 200) {
-      List<dynamic> data = json.decode(response.body);
-      return data.map((item) => item as Map<String, dynamic>).toList();
+      try {
+        // Parse the response body as a list of maps
+        List<dynamic> data = json.decode(response.body);
+
+        // Safely map each item as a Map<String, dynamic>
+        return data.map((item) {
+          if (item is Map<String, dynamic>) {
+            return item; // It's already a Map, so return it
+          } else {
+            // If the item is not a Map, handle this case
+            throw FormatException('Item is not a Map');
+          }
+        }).toList();
+      } catch (e) {
+        // Handle any issues that occur during decoding
+        throw Exception('Failed to parse blogs: $e');
+      }
     } else {
       throw Exception('Failed to load blogs');
     }
@@ -124,6 +140,8 @@ class BlogListTab extends StatelessWidget {
           itemCount: blogs.length,
           itemBuilder: (context, index) {
             final blog = blogs[index];
+            String? imageUrl = blog['image_url']; // Assuming image_url field
+
             return GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -135,7 +153,7 @@ class BlogListTab extends StatelessWidget {
                       date: blog['date'] ?? 'No Date',
                       time: blog['time'] ?? 'No Time',
                       content: blog['content'] ?? 'No Content',
-                      imageUrl: blog['image'] ?? 'assets/images/default.png',
+                      imageUrl: imageUrl ?? 'assets/images/content/cont0.png',
                     ),
                   ),
                 );
@@ -146,39 +164,64 @@ class BlogListTab extends StatelessWidget {
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
-                child: ListTile(
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-                  leading: ClipRRect(
-                    borderRadius: BorderRadius.circular(8),
-                    child: Image.network(
-                      blog['image'] ?? 'assets/images/default.png',
-                      fit: BoxFit.cover,
-                      width: 50,
-                      height: 50,
-                    ),
-                  ),
-                  title: Text(
-                    blog['title'] ?? 'No Title',
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  subtitle: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        blog['author'] ?? 'No Author',
-                        style: TextStyle(color: Colors.white70, fontSize: 12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.all(16.0),
+                      child: Row(
+                        children: [
+                          // Thumbnail image
+                          imageUrl != null && imageUrl.startsWith('http')
+                              ? Image.network(
+                                  imageUrl,
+                                  fit: BoxFit.cover,
+                                  height: 50,
+                                  width: 50,
+                                )
+                              : imageUrl != null
+                                  ? Image.memory(
+                                      base64Decode(imageUrl),
+                                      fit: BoxFit.cover,
+                                      height: 50,
+                                      width: 50,
+                                    )
+                                  : Image.asset(
+                                      'assets/images/default.png',
+                                      fit: BoxFit.cover,
+                                      height: 50,
+                                      width: 50,
+                                    ),
+                          SizedBox(width: 16),
+                          // Blog text
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                blog['title'] ?? 'No Title',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                blog['author'] ?? 'No Author',
+                                style: TextStyle(color: Colors.white70),
+                              ),
+                              SizedBox(height: 4),
+                              Text(
+                                '${blog['date'] ?? 'No Date'} • ${blog['time'] ?? 'No Time'}',
+                                style: TextStyle(
+                                    color: Colors.white54, fontSize: 12),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      SizedBox(height: 4),
-                      Text(
-                        '${blog['date'] ?? 'No Date'} • ${blog['time'] ?? 'No Time'}',
-                        style: TextStyle(color: Colors.white54, fontSize: 10),
-                      ),
-                    ],
-                  ),
+                    ),
+                  ],
                 ),
               ),
             );
