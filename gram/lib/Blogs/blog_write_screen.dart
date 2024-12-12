@@ -1,5 +1,6 @@
+import 'dart:convert';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart' as http;
 
 class BlogWriteScreen extends StatefulWidget {
   @override
@@ -10,21 +11,31 @@ class _BlogWriteScreenState extends State<BlogWriteScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
 
-  void _submitBlog() async {
+  Future<void> _submitBlog() async {
     final title = _titleController.text;
     final content = _contentController.text;
+
     if (title.isNotEmpty && content.isNotEmpty) {
       try {
-        await FirebaseFirestore.instance.collection('blogs').add({
-          'title': title,
-          'content': content,
-          'timestamp': Timestamp.now(),
-        });
-        print('Blog submitted: $title - $content');
-        Navigator.pop(context, {'title': title, 'content': content});
+        final url = Uri.parse(
+            'http://192.168.100.9:5000/create_blog'); // Update with your Flask server's IP
+        final response = await http.post(
+          url,
+          headers: {'Content-Type': 'application/json'},
+          body: json.encode({'title': title, 'content': content}),
+        );
+
+        if (response.statusCode == 201) {
+          print('Blog created successfully');
+          Navigator.pop(context, {'title': title, 'content': content});
+        } else {
+          print('Error creating blog: ${response.body}');
+        }
       } catch (e) {
-        print('Error saving blog: $e');
+        print('Error submitting blog: $e');
       }
+    } else {
+      print('Please fill in both the title and content.');
     }
   }
 

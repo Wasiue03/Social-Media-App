@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:gram/Blogs/blog_details_screen.dart';
-import 'package:gram/Blogs/blog_write_screen.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'blog_write_screen.dart';
+import 'blog_details_screen.dart';
 
 class BlogListScreen extends StatefulWidget {
   @override
@@ -18,9 +19,22 @@ class _BlogListScreenState extends State<BlogListScreen>
     _tabController = TabController(length: 3, vsync: this);
   }
 
-  void _addNewBlog(Map<String, String> newBlog) {
+  Future<List<Map<String, dynamic>>> _fetchBlogs() async {
+    final url = Uri.parse(
+        'http://192.168.100.9:5000/get_blogs'); // Replace with your Flask server IP
+    final response = await http.get(url);
+
+    if (response.statusCode == 200) {
+      List<dynamic> data = json.decode(response.body);
+      return data.map((item) => item as Map<String, dynamic>).toList();
+    } else {
+      throw Exception('Failed to load blogs');
+    }
+  }
+
+  void _addNewBlog(Map<String, dynamic> newBlog) {
     setState(() {
-      // Handle adding a new blog
+      // Handle adding a new blog if needed
     });
   }
 
@@ -31,21 +45,12 @@ class _BlogListScreenState extends State<BlogListScreen>
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0,
-        title: Text('Blog App', style: TextStyle(color: Colors.white)),
-        leading: IconButton(
-          icon: Icon(Icons.menu, color: Colors.white),
-          onPressed: () {},
-        ),
-        actions: [
-          CircleAvatar(
-            backgroundImage: AssetImage('assets/images/profiles/profile2.jpeg'),
-          ),
-          SizedBox(width: 16),
-        ],
+        title: Text('Blogs', style: TextStyle(color: Colors.tealAccent)),
+        centerTitle: true,
         bottom: TabBar(
           controller: _tabController,
           indicatorColor: Colors.tealAccent,
-          labelColor: Colors.white,
+          labelColor: Colors.tealAccent,
           unselectedLabelColor: Colors.white60,
           tabs: [
             Tab(text: 'Featured'),
@@ -57,12 +62,12 @@ class _BlogListScreenState extends State<BlogListScreen>
       body: TabBarView(
         controller: _tabController,
         children: [
-          BlogListTab(),
-          BlogListTab(),
-          BlogListTab(),
+          BlogListTab(fetchBlogs: _fetchBlogs),
+          BlogListTab(fetchBlogs: _fetchBlogs),
+          BlogListTab(fetchBlogs: _fetchBlogs),
         ],
       ),
-      floatingActionButton: FloatingActionButton(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: () async {
           final newBlog = await Navigator.push(
             context,
@@ -73,32 +78,44 @@ class _BlogListScreenState extends State<BlogListScreen>
           }
         },
         backgroundColor: Colors.tealAccent,
-        child: Icon(Icons.add, color: Colors.black),
+        icon: Icon(Icons.add, color: Colors.black),
+        label: Text(
+          'Write Blog',
+          style: TextStyle(color: Colors.black),
+        ),
       ),
     );
   }
 }
 
 class BlogListTab extends StatelessWidget {
-  Future<List<Map<String, dynamic>>> _fetchBlogs() async {
-    final firestore = FirebaseFirestore.instance;
-    final snapshot = await firestore.collection('blogs').get();
-    return snapshot.docs.map((doc) => doc.data()).toList();
-  }
+  final Future<List<Map<String, dynamic>>> Function() fetchBlogs;
+
+  BlogListTab({required this.fetchBlogs});
 
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Map<String, dynamic>>>(
-      future: _fetchBlogs(),
+      future: fetchBlogs(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError) {
-          return Center(child: Text('Error: ${snapshot.error}'));
+          return Center(
+            child: Text(
+              'Error: ${snapshot.error}',
+              style: TextStyle(color: Colors.redAccent),
+            ),
+          );
         }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text('No blogs available'));
+          return Center(
+            child: Text(
+              'No blogs available',
+              style: TextStyle(color: Colors.white60),
+            ),
+          );
         }
 
         final blogs = snapshot.data!;
@@ -124,20 +141,42 @@ class BlogListTab extends StatelessWidget {
                 );
               },
               child: Card(
+                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 color: Colors.grey.shade900,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 child: ListTile(
-                  leading: Image.network(
-                      blog['image'] ?? 'assets/images/default.png'),
-                  title: Text(blog['title'] ?? 'No Title',
-                      style: TextStyle(color: Colors.white)),
+                  contentPadding:
+                      EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  leading: ClipRRect(
+                    borderRadius: BorderRadius.circular(8),
+                    child: Image.network(
+                      blog['image'] ?? 'assets/images/default.png',
+                      fit: BoxFit.cover,
+                      width: 50,
+                      height: 50,
+                    ),
+                  ),
+                  title: Text(
+                    blog['title'] ?? 'No Title',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(blog['author'] ?? 'No Author',
-                          style: TextStyle(color: Colors.white60)),
                       Text(
-                          '${blog['date'] ?? 'No Date'} • ${blog['time'] ?? 'No Time'}',
-                          style: TextStyle(color: Colors.white60)),
+                        blog['author'] ?? 'No Author',
+                        style: TextStyle(color: Colors.white70, fontSize: 12),
+                      ),
+                      SizedBox(height: 4),
+                      Text(
+                        '${blog['date'] ?? 'No Date'} • ${blog['time'] ?? 'No Time'}',
+                        style: TextStyle(color: Colors.white54, fontSize: 10),
+                      ),
                     ],
                   ),
                 ),
