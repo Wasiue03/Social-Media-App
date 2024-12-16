@@ -30,7 +30,7 @@ class _BlogWriteScreenState extends State<BlogWriteScreen> {
 
     if (title.isNotEmpty && content.isNotEmpty && _selectedImage != null) {
       try {
-        final url = Uri.parse('http://192.168.100.9:5000/create_blog');
+        final url = Uri.parse('http://192.168.100.6:5000/create_blog');
 
         var request = http.MultipartRequest('POST', url)
           ..fields['title'] = title

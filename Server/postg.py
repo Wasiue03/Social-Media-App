@@ -73,7 +73,7 @@ def get_blogs():
         db_cursor.execute("SELECT * FROM blogs ORDER BY timestamp DESC;")
         blogs = db_cursor.fetchall()
 
-        # Convert the list of tuples into a list of dictionaries
+        
         blogs_list = []
         for blog in blogs:
             blog_dict = {
@@ -84,14 +84,14 @@ def get_blogs():
                 "timestamp": blog[4]
             }
 
-            # Convert image URL to base64 if there's an image URL
+            
             if blog_dict['image_url']:
                 try:
                     with open(blog_dict['image_url'], "rb") as img_file:
                         encoded_image = base64.b64encode(img_file.read()).decode('utf-8')
                     blog_dict['image_url'] = encoded_image
                 except Exception as e:
-                    blog_dict['image_url'] = None  # Handle error if image is not found
+                    blog_dict['image_url'] = None  
 
             blogs_list.append(blog_dict)
 
@@ -101,3 +101,5 @@ def get_blogs():
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0', port=5000, use_reloader=False)
+
+
