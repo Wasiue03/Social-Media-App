@@ -95,6 +95,7 @@ class BlogListTab extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<Map<String, dynamic>>>(
+      // Fetching the blogs
       future: fetchBlogs(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -125,9 +126,9 @@ class BlogListTab extends StatelessWidget {
             final blog = blogs[index];
             String? imageUrl = blog['image_url'];
 
-            // Construct the full image URL if it’s relative
+            // Construct the full image URL if it's relative
             if (imageUrl != null && !imageUrl.startsWith('http')) {
-              imageUrl = 'http://192.168.100.6:5000/uploads/$imageUrl';
+              imageUrl = 'http://192.168.100.6:5000/uploads/1000503625.jpg';
             }
 
             return GestureDetector(
@@ -141,7 +142,8 @@ class BlogListTab extends StatelessWidget {
                       date: blog['date'] ?? 'No Date',
                       time: blog['time'] ?? 'No Time',
                       content: blog['content'] ?? 'No Content',
-                      imageUrl: imageUrl ?? '',
+                      imageUrl:
+                          imageUrl ?? '', // Pass imageUrl for the detail screen
                     ),
                   ),
                 );
@@ -167,20 +169,11 @@ class BlogListTab extends StatelessWidget {
                               width: double.infinity,
                               height: 180,
                               errorBuilder: (context, error, stackTrace) {
-                                return Image.asset(
-                                  'assets/images/default.png',
-                                  fit: BoxFit.cover,
-                                  width: double.infinity,
-                                  height: 180,
-                                );
+                                return SizedBox
+                                    .shrink(); // No image if error occurs
                               },
                             )
-                          : Image.asset(
-                              'assets/images/default.png',
-                              fit: BoxFit.cover,
-                              width: double.infinity,
-                              height: 180,
-                            ),
+                          : SizedBox.shrink(), // No image if imageUrl is null
                     ),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
