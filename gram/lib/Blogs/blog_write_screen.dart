@@ -31,15 +31,12 @@ class _BlogWriteScreenState extends State<BlogWriteScreen> {
 
     if (title.isNotEmpty && content.isNotEmpty && _selectedImage != null) {
       try {
-        final url = Uri.parse(
-            'http://192.168.100.9:5000/create_blog'); // Update with your Flask server's IP
+        final url = Uri.parse('http://192.168.100.9:5000/create_blog');
 
-        // Create multipart request
         var request = http.MultipartRequest('POST', url)
           ..fields['title'] = title
           ..fields['content'] = content;
 
-        // Add image as multipart file
         var image = await http.MultipartFile.fromPath(
           'image',
           _selectedImage!.path,
@@ -47,7 +44,6 @@ class _BlogWriteScreenState extends State<BlogWriteScreen> {
         );
         request.files.add(image);
 
-        // Send request
         final response = await request.send();
 
         if (response.statusCode == 201) {
