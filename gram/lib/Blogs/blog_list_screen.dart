@@ -6,6 +6,8 @@ import 'blog_write_screen.dart';
 import 'blog_details_screen.dart';
 
 class BlogListScreen extends StatefulWidget {
+  const BlogListScreen({super.key});
+
   @override
   _BlogListScreenState createState() => _BlogListScreenState();
 }
@@ -44,14 +46,14 @@ class _BlogListScreenState extends State<BlogListScreen>
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0,
-        title: Text('Blogs', style: TextStyle(color: Colors.tealAccent)),
+        title: const Text('Blogs', style: TextStyle(color: Colors.tealAccent)),
         centerTitle: true,
         bottom: TabBar(
           controller: _tabController,
           indicatorColor: Colors.tealAccent,
           labelColor: Colors.tealAccent,
           unselectedLabelColor: Colors.white60,
-          tabs: [
+          tabs: const [
             Tab(text: 'Featured'),
             Tab(text: 'Latest'),
             Tab(text: 'Trending'),
@@ -77,8 +79,8 @@ class _BlogListScreenState extends State<BlogListScreen>
           }
         },
         backgroundColor: Colors.tealAccent,
-        icon: Icon(Icons.add, color: Colors.black),
-        label: Text(
+        icon: const Icon(Icons.add, color: Colors.black),
+        label: const Text(
           'Write Blog',
           style: TextStyle(color: Colors.black),
         ),
@@ -90,7 +92,7 @@ class _BlogListScreenState extends State<BlogListScreen>
 class BlogListTab extends StatelessWidget {
   final Future<List<Map<String, dynamic>>> Function() fetchBlogs;
 
-  BlogListTab({required this.fetchBlogs});
+  const BlogListTab({super.key, required this.fetchBlogs});
 
   @override
   Widget build(BuildContext context) {
@@ -99,18 +101,18 @@ class BlogListTab extends StatelessWidget {
       future: fetchBlogs(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         }
         if (snapshot.hasError) {
           return Center(
             child: Text(
               'Error: ${snapshot.error}',
-              style: TextStyle(color: Colors.redAccent),
+              style: const TextStyle(color: Colors.redAccent),
             ),
           );
         }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(
+          return const Center(
             child: Text(
               'No blogs available',
               style: TextStyle(color: Colors.white60),
@@ -149,7 +151,7 @@ class BlogListTab extends StatelessWidget {
                 );
               },
               child: Card(
-                margin: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(12),
                 ),
@@ -159,7 +161,7 @@ class BlogListTab extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     ClipRRect(
-                      borderRadius: BorderRadius.vertical(
+                      borderRadius: const BorderRadius.vertical(
                         top: Radius.circular(12),
                       ),
                       child: imageUrl != null
@@ -169,11 +171,12 @@ class BlogListTab extends StatelessWidget {
                               width: double.infinity,
                               height: 180,
                               errorBuilder: (context, error, stackTrace) {
-                                return SizedBox
+                                return const SizedBox
                                     .shrink(); // No image if error occurs
                               },
                             )
-                          : SizedBox.shrink(), // No image if imageUrl is null
+                          : const SizedBox
+                              .shrink(), // No image if imageUrl is null
                     ),
                     Padding(
                       padding: const EdgeInsets.all(16.0),
@@ -182,21 +185,21 @@ class BlogListTab extends StatelessWidget {
                         children: [
                           Text(
                             blog['title'] ?? 'No Title',
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white,
                               fontWeight: FontWeight.bold,
                               fontSize: 18,
                             ),
                           ),
-                          SizedBox(height: 8),
+                          const SizedBox(height: 8),
                           Text(
                             blog['author'] ?? 'No Author',
-                            style: TextStyle(color: Colors.white70),
+                            style: const TextStyle(color: Colors.white70),
                           ),
-                          SizedBox(height: 4),
+                          const SizedBox(height: 4),
                           Text(
                             '${blog['date'] ?? 'No Date'} • ${blog['time'] ?? 'No Time'}',
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.white54,
                               fontSize: 12,
                             ),

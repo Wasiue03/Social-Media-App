@@ -9,6 +9,8 @@ import 'package:gram/feed/add_posts.dart';
 import 'package:firebase_auth/firebase_auth.dart'; // Import for Firebase Authentication
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
@@ -46,7 +48,7 @@ class _HomePageState extends State<HomePage> {
       child: GestureDetector(
         onTap: onTap,
         child: Container(
-          padding: EdgeInsets.symmetric(vertical: 10),
+          padding: const EdgeInsets.symmetric(vertical: 10),
           decoration: BoxDecoration(
             color: isSelected ? Colors.white : Colors.grey.shade800,
             borderRadius: BorderRadius.circular(20),
@@ -91,18 +93,18 @@ class _HomePageState extends State<HomePage> {
                 radius: 30,
                 backgroundImage: AssetImage(imagePath),
               ),
-              SizedBox(width: 10),
+              const SizedBox(width: 10),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
                     username,
-                    style: TextStyle(color: Colors.white, fontSize: 16),
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
                   ),
-                  SizedBox(height: 4),
+                  const SizedBox(height: 4),
                   Text(
                     universeDescription,
-                    style: TextStyle(color: Colors.white70, fontSize: 12),
+                    style: const TextStyle(color: Colors.white70, fontSize: 12),
                     overflow: TextOverflow.ellipsis,
                   ),
                 ],
@@ -120,17 +122,17 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
         actions: [
           GestureDetector(
             onTap: _navigateToUserAccount,
-            child: CircleAvatar(
+            child: const CircleAvatar(
               backgroundImage:
                   AssetImage('assets/images/profiles/profile2.jpeg'),
             ),
           ),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
         ],
       ),
       drawer: CustomDrawer(
@@ -150,7 +152,7 @@ class _HomePageState extends State<HomePage> {
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Container(
+                    SizedBox(
                       height: 120,
                       child: ListView(
                         scrollDirection: Axis.horizontal,
@@ -195,7 +197,7 @@ class _HomePageState extends State<HomePage> {
                   ],
                 ),
               ),
-              SizedBox(height: 16),
+              const SizedBox(height: 16),
 
               // Post Feed
               PostFeed(),
@@ -207,7 +209,7 @@ class _HomePageState extends State<HomePage> {
         backgroundColor: Colors.black,
         type: BottomNavigationBarType.fixed,
         currentIndex: _currentIndex,
-        items: [
+        items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home, color: Colors.white),
             label: 'Home',
@@ -258,7 +260,7 @@ class _HomePageState extends State<HomePage> {
               );
             } else {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
+                const SnackBar(
                   content: Text("No user logged in."),
                   backgroundColor: Colors.red,
                 ),

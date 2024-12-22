@@ -8,7 +8,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 class PostUploadScreen extends StatefulWidget {
   final Function(Map<String, dynamic>) onPostUploaded;
 
-  PostUploadScreen({required this.onPostUploaded});
+  const PostUploadScreen({super.key, required this.onPostUploaded});
 
   @override
   _PostUploadScreenState createState() => _PostUploadScreenState();
@@ -40,7 +40,7 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
       final storageRef = FirebaseStorage.instance
           .ref()
           .child('post_images')
-          .child(DateTime.now().toIso8601String() + '.jpg');
+          .child('${DateTime.now().toIso8601String()}.jpg');
 
       final uploadTask = storageRef.putFile(File(_imagePath!));
       final snapshot = await uploadTask.whenComplete(() {});
@@ -110,16 +110,16 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
       appBar: AppBar(
         backgroundColor: Colors.grey[900],
         elevation: 0,
-        iconTheme: IconThemeData(color: Colors.white),
+        iconTheme: const IconThemeData(color: Colors.white),
         actions: [
           // Post button at the top right corner
           TextButton(
             onPressed: _isUploading ? null : _uploadPost,
             child: _isUploading
-                ? CircularProgressIndicator(
+                ? const CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                   )
-                : Text(
+                : const Text(
                     'Post',
                     style: TextStyle(color: Colors.white, fontSize: 18),
                   ),
@@ -132,24 +132,24 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
+            const Text(
               'What\'s on your mind?',
               style: TextStyle(color: Colors.white, fontSize: 20),
             ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             // Content box with image upload button inside
             Container(
               decoration: BoxDecoration(
                 color: Colors.grey[800],
                 borderRadius: BorderRadius.circular(10),
               ),
-              padding: EdgeInsets.all(10),
+              padding: const EdgeInsets.all(10),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TextField(
                     controller: _contentController,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       filled: true,
                       fillColor: Colors.transparent,
                       border: InputBorder.none,
@@ -157,14 +157,14 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
                       hintStyle: TextStyle(color: Colors.white54),
                     ),
                     maxLines: 4,
-                    style: TextStyle(color: Colors.white),
+                    style: const TextStyle(color: Colors.white),
                   ),
-                  SizedBox(height: 10),
+                  const SizedBox(height: 10),
                   // Image upload button inside the content box with "+" icon
                   Align(
                     alignment: Alignment.centerRight,
                     child: IconButton(
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.add,
                         color: Colors.blueAccent,
                         size: 30,
@@ -175,11 +175,11 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
                 ],
               ),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             // If an image is picked, display it
             if (_imagePath != null)
               Container(
-                margin: EdgeInsets.symmetric(vertical: 10),
+                margin: const EdgeInsets.symmetric(vertical: 10),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.file(

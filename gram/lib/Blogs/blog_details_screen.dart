@@ -8,7 +8,8 @@ class BlogDetailScreen extends StatelessWidget {
   final String content;
   final String imageUrl;
 
-  BlogDetailScreen({
+  const BlogDetailScreen({
+    super.key,
     required this.title,
     required this.author,
     required this.date,
@@ -25,12 +26,12 @@ class BlogDetailScreen extends StatelessWidget {
         backgroundColor: Colors.black,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
             Navigator.pop(context);
           },
         ),
-        title: Text('Read Blog', style: TextStyle(color: Colors.white)),
+        title: const Text('Read Blog', style: TextStyle(color: Colors.white)),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -39,12 +40,15 @@ class BlogDetailScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Image.asset(imageUrl, fit: BoxFit.cover),
-              SizedBox(height: 16),
-              Text(title, style: TextStyle(color: Colors.white, fontSize: 24)),
-              SizedBox(height: 8),
-              Text('$author • $date • $time', style: TextStyle(color: Colors.white60, fontSize: 14)),
-              SizedBox(height: 16),
-              Text(content, style: TextStyle(color: Colors.white70, fontSize: 16)),
+              const SizedBox(height: 16),
+              Text(title,
+                  style: const TextStyle(color: Colors.white, fontSize: 24)),
+              const SizedBox(height: 8),
+              Text('$author • $date • $time',
+                  style: const TextStyle(color: Colors.white60, fontSize: 14)),
+              const SizedBox(height: 16),
+              Text(content,
+                  style: const TextStyle(color: Colors.white70, fontSize: 16)),
             ],
           ),
         ),

@@ -3,12 +3,14 @@ import 'package:http/http.dart' as http;
 import 'dart:convert';
 
 class ChatScreen extends StatefulWidget {
+  const ChatScreen({super.key});
+
   @override
   _ChatScreenState createState() => _ChatScreenState();
 }
 
 class _ChatScreenState extends State<ChatScreen> {
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
   List<Map<String, String>> messages = [];
   bool isLoading = false;
 
@@ -18,31 +20,30 @@ class _ChatScreenState extends State<ChatScreen> {
       isLoading = true;
     });
 
-    try {
-      final response = await http.post(
-        Uri.parse('http://localhost:5000/chat'),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'message': message}),
-      );
+    final response = await http.post(
+      Uri.parse('http://192.168.100.12:5000/chat'),
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'message': message}),
+    );
 
-      if (response.statusCode == 200) {
-        final data = jsonDecode(response.body);
+    print('Response status: ${response.statusCode}');
+    print('Response body: ${response.body}');
+
+    if (response.statusCode == 200) {
+      final data = jsonDecode(response.body);
+      if (data['reply'] != null) {
         setState(() {
-          messages.add({'role': 'bot', 'text': data['response']});
+          messages.add({'role': 'bot', 'text': data['reply']});
         });
       } else {
         setState(() {
-          messages.add({'role': 'bot', 'text': 'Failed to get response.'});
+          messages.add({'role': 'bot', 'text': 'No response from server.'});
         });
       }
-    } catch (e) {
+    } else {
       setState(() {
         messages
-            .add({'role': 'bot', 'text': 'Error occurred. Try again later.'});
-      });
-    } finally {
-      setState(() {
-        isLoading = false;
+            .add({'role': 'bot', 'text': 'Failed to get a valid response.'});
       });
     }
   }
@@ -50,7 +51,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Chatbot')),
+      appBar: AppBar(title: const Text('Chatbot')),
       body: Column(
         children: [
           Expanded(
@@ -63,8 +64,9 @@ class _ChatScreenState extends State<ChatScreen> {
                       ? Alignment.centerRight
                       : Alignment.centerLeft,
                   child: Container(
-                    padding: EdgeInsets.all(12),
-                    margin: EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                    padding: const EdgeInsets.all(12),
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
                     decoration: BoxDecoration(
                       color: message['role'] == 'user'
                           ? Colors.blue
@@ -74,28 +76,30 @@ class _ChatScreenState extends State<ChatScreen> {
                     child: Text(
                       message['text']!,
                       style: TextStyle(
-                          color: message['role'] == 'user'
-                              ? Colors.white
-                              : Colors.black),
+                        color: message['role'] == 'user'
+                            ? Colors.white
+                            : Colors.black,
+                      ),
                     ),
                   ),
                 );
               },
             ),
           ),
-          if (isLoading) CircularProgressIndicator(),
+          if (isLoading) const CircularProgressIndicator(),
           Padding(
-            padding: EdgeInsets.all(8.0),
+            padding: const EdgeInsets.all(8.0),
             child: Row(
               children: [
                 Expanded(
                   child: TextField(
                     controller: _controller,
-                    decoration: InputDecoration(hintText: 'Ask something...'),
+                    decoration:
+                        const InputDecoration(hintText: 'Ask something...'),
                   ),
                 ),
                 IconButton(
-                  icon: Icon(Icons.send),
+                  icon: const Icon(Icons.send),
                   onPressed: () {
                     if (_controller.text.isNotEmpty) {
                       sendMessage(_controller.text);

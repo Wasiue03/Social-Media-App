@@ -5,6 +5,8 @@ import 'package:gram/Homepage/homepage.dart';
 import 'package:gram/Profile/user_profile.dart';
 
 class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
+
   @override
   _SignUpPageState createState() => _SignUpPageState();
 }
@@ -64,11 +66,12 @@ class _SignUpPageState extends State<SignUpPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.black,
-          title: Text("Error", style: TextStyle(color: Colors.redAccent)),
-          content: Text(message, style: TextStyle(color: Colors.white)),
+          title: const Text("Error", style: TextStyle(color: Colors.redAccent)),
+          content: Text(message, style: const TextStyle(color: Colors.white)),
           actions: <Widget>[
             TextButton(
-              child: Text("OK", style: TextStyle(color: Colors.tealAccent)),
+              child:
+                  const Text("OK", style: TextStyle(color: Colors.tealAccent)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -88,7 +91,7 @@ class _SignUpPageState extends State<SignUpPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
+            const Text(
               'Sign Up',
               style: TextStyle(
                 color: Colors.white,
@@ -96,10 +99,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
             TextField(
               controller: _usernameController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Username',
                 hintText: 'Enter your username',
                 hintStyle: TextStyle(color: Colors.white70),
@@ -111,12 +114,12 @@ class _SignUpPageState extends State<SignUpPage> {
                   borderSide: BorderSide(color: Colors.white),
                 ),
               ),
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Email',
                 hintText: 'Enter your email',
                 hintStyle: TextStyle(color: Colors.white70),
@@ -128,13 +131,13 @@ class _SignUpPageState extends State<SignUpPage> {
                   borderSide: BorderSide(color: Colors.white),
                 ),
               ),
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
               keyboardType: TextInputType.emailAddress,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Password',
                 hintText: 'Enter your password',
                 hintStyle: TextStyle(color: Colors.white70),
@@ -146,24 +149,26 @@ class _SignUpPageState extends State<SignUpPage> {
                   borderSide: BorderSide(color: Colors.white),
                 ),
               ),
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
               obscureText: true,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _signUp,
-              child: Text('Sign Up'),
               style: ElevatedButton.styleFrom(
                 foregroundColor: Colors.white,
                 backgroundColor: Colors.black,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0),
                 ),
-                padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 30.0),
-                textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 15.0, horizontal: 30.0),
+                textStyle:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 shadowColor: Colors.white70,
                 elevation: 10,
               ),
+              child: Text('Sign Up'),
             ),
           ],
         ),
