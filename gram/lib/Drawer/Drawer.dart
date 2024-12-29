@@ -4,7 +4,8 @@ class CustomDrawer extends StatelessWidget {
   final Function(int) onMenuItemSelected;
   final VoidCallback onLogout;
 
-  CustomDrawer({required this.onMenuItemSelected, required this.onLogout});
+  const CustomDrawer(
+      {super.key, required this.onMenuItemSelected, required this.onLogout});
 
   @override
   Widget build(BuildContext context) {
@@ -12,26 +13,27 @@ class CustomDrawer extends StatelessWidget {
       backgroundColor: Colors.black,
       child: ListView(
         children: [
-          DrawerHeader(
-            child: Text('Menu', style: TextStyle(color: Colors.white)),
+          const DrawerHeader(
             decoration: BoxDecoration(color: Colors.black),
+            child: Text('Menu', style: TextStyle(color: Colors.white)),
           ),
           ListTile(
-            title: Text('Home', style: TextStyle(color: Colors.white)),
+            title: const Text('Home', style: TextStyle(color: Colors.white)),
             onTap: () {
               onMenuItemSelected(0); // Notify parent about menu selection
               Navigator.pop(context); // Close the drawer
             },
           ),
           ListTile(
-            title: Text('Settings', style: TextStyle(color: Colors.white)),
+            title:
+                const Text('Settings', style: TextStyle(color: Colors.white)),
             onTap: () {
               onMenuItemSelected(1); // Notify parent about menu selection
               Navigator.pop(context); // Close the drawer
             },
           ),
           ListTile(
-            title: Text('Logout', style: TextStyle(color: Colors.red)),
+            title: const Text('Logout', style: TextStyle(color: Colors.red)),
             onTap: () {
               onLogout(); // Call the logout function passed from parent
             },

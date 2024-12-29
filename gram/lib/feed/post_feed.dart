@@ -5,6 +5,8 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class PostFeed extends StatefulWidget {
+  const PostFeed({super.key});
+
   @override
   _PostFeedState createState() => _PostFeedState();
 }
@@ -51,10 +53,10 @@ class _PostFeedState extends State<PostFeed> {
         radius: 20,
       );
     } else {
-      return CircleAvatar(
+      return const CircleAvatar(
         backgroundColor: Colors.grey,
-        child: Icon(Icons.account_circle, color: Colors.white, size: 40),
         radius: 20,
+        child: Icon(Icons.account_circle, color: Colors.white, size: 40),
       );
     }
   }
@@ -65,15 +67,15 @@ class _PostFeedState extends State<PostFeed> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
+          const Padding(
+            padding: EdgeInsets.all(16.0),
             child: Text(
               'Post Feed',
               style: TextStyle(color: Colors.white, fontSize: 18),
             ),
           ),
           posts.isEmpty
-              ? Center(
+              ? const Center(
                   child: Text(
                     'No posts available',
                     style: TextStyle(color: Colors.white),
@@ -81,7 +83,7 @@ class _PostFeedState extends State<PostFeed> {
                 )
               : ListView.builder(
                   shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
+                  physics: const NeverScrollableScrollPhysics(),
                   itemCount: posts.length,
                   itemBuilder: (context, index) {
                     final post = posts[index];
@@ -106,17 +108,18 @@ class _PostFeedState extends State<PostFeed> {
                               leading:
                                   _buildProfileImage(post['userProfileImage']),
                               title: Text(post['userName'] ?? 'Unknown User',
-                                  style: TextStyle(color: Colors.white)),
+                                  style: const TextStyle(color: Colors.white)),
                               subtitle: Text(getTimeAgo(postTime),
-                                  style: TextStyle(color: Colors.white60)),
-                              trailing:
-                                  Icon(Icons.more_vert, color: Colors.white),
+                                  style:
+                                      const TextStyle(color: Colors.white60)),
+                              trailing: const Icon(Icons.more_vert,
+                                  color: Colors.white),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
                               child: Text(
                                 post['content'] ?? '',
-                                style: TextStyle(color: Colors.white),
+                                style: const TextStyle(color: Colors.white),
                               ),
                             ),
                             if (post['image'] != null)
@@ -142,11 +145,11 @@ class _PostFeedState extends State<PostFeed> {
                                   Row(
                                     children: [
                                       IconButton(
-                                        icon: Icon(Icons.thumb_up,
+                                        icon: const Icon(Icons.thumb_up,
                                             color: Colors.white),
                                         onPressed: () {},
                                       ),
-                                      Text('Like',
+                                      const Text('Like',
                                           style:
                                               TextStyle(color: Colors.white)),
                                     ],
@@ -154,11 +157,11 @@ class _PostFeedState extends State<PostFeed> {
                                   Row(
                                     children: [
                                       IconButton(
-                                        icon: Icon(Icons.comment,
+                                        icon: const Icon(Icons.comment,
                                             color: Colors.white),
                                         onPressed: () {},
                                       ),
-                                      Text('Comment',
+                                      const Text('Comment',
                                           style:
                                               TextStyle(color: Colors.white)),
                                     ],

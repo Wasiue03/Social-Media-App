@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
 class CreateAndDiscoverPage extends StatelessWidget {
+  const CreateAndDiscoverPage({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -11,15 +13,15 @@ class CreateAndDiscoverPage extends StatelessWidget {
           children: [
             Image.network(
                 'https://example.com/discover.jpg'), // Replace with your image
-            SizedBox(height: 20),
-            Text(
+            const SizedBox(height: 20),
+            const Text(
               'Create & Discover',
               style: TextStyle(color: Colors.white, fontSize: 24),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {},
-              child: Text('Let\'s Go'),
+              child: const Text('Let\'s Go'),
             ),
           ],
         ),

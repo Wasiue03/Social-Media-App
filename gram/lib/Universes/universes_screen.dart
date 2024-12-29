@@ -6,7 +6,8 @@ class UniverseScreen extends StatelessWidget {
   final String imagePath;
   final String description;
 
-  UniverseScreen({
+  const UniverseScreen({
+    super.key,
     required this.username,
     required this.imagePath,
     required this.description,
@@ -29,7 +30,7 @@ class UniverseScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('${username}\'s Universe'),
+        title: Text('$username\'s Universe'),
         foregroundColor: Colors.white,
         backgroundColor: Colors.black,
       ),
@@ -51,10 +52,10 @@ class UniverseScreen extends StatelessWidget {
                         radius: 40,
                         backgroundImage: AssetImage(imagePath),
                       ),
-                      SizedBox(height: 10),
+                      const SizedBox(height: 10),
                       Text(
                         username,
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: Colors.white,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
@@ -80,11 +81,11 @@ class UniverseScreen extends StatelessWidget {
                     child: Container(
                       width: 40,
                       height: 40,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.blue,
                       ),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           'Earth',
                           style: TextStyle(
@@ -107,11 +108,11 @@ class UniverseScreen extends StatelessWidget {
                     child: Container(
                       width: 36,
                       height: 36,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.red,
                       ),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           'Mars',
                           style: TextStyle(
@@ -134,11 +135,11 @@ class UniverseScreen extends StatelessWidget {
                     child: Container(
                       width: 50,
                       height: 50,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.orange,
                       ),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           'Jupiter',
                           style: TextStyle(
@@ -161,11 +162,11 @@ class UniverseScreen extends StatelessWidget {
                     child: Container(
                       width: 44,
                       height: 44,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.brown,
                       ),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           'Saturn',
                           style: TextStyle(
@@ -188,11 +189,11 @@ class UniverseScreen extends StatelessWidget {
                     child: Container(
                       width: 40,
                       height: 40,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.cyan,
                       ),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           'Uranus',
                           style: TextStyle(
@@ -215,11 +216,11 @@ class UniverseScreen extends StatelessWidget {
                     child: Container(
                       width: 36,
                       height: 36,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.indigo,
                       ),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           'Neptune',
                           style: TextStyle(
@@ -242,11 +243,11 @@ class UniverseScreen extends StatelessWidget {
                     child: Container(
                       width: 30,
                       height: 30,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.grey,
                       ),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           'Pluto',
                           style: TextStyle(
@@ -269,11 +270,11 @@ class UniverseScreen extends StatelessWidget {
                     child: Container(
                       width: 48,
                       height: 48,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         shape: BoxShape.circle,
                         color: Colors.orangeAccent,
                       ),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           'Eris',
                           style: TextStyle(

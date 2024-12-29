@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 class ProfileScreen extends StatelessWidget {
   final String userId;
 
-  ProfileScreen({required this.userId});
+  const ProfileScreen({super.key, required this.userId});
 
   @override
   Widget build(BuildContext context) {
@@ -21,11 +21,11 @@ class ProfileScreen extends StatelessWidget {
         builder:
             (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
-            return Center(
+            return const Center(
               child: Text(
                 "Error loading profile",
                 style: TextStyle(color: Colors.white),
@@ -34,7 +34,7 @@ class ProfileScreen extends StatelessWidget {
           }
 
           if (!snapshot.hasData || !snapshot.data!.exists) {
-            return Center(
+            return const Center(
               child: Text(
                 "Profile not found",
                 style: TextStyle(color: Colors.white),
@@ -58,45 +58,45 @@ class ProfileScreen extends StatelessWidget {
                         ? NetworkImage(userData['profileImage'])
                         : null,
                     child: userData['profileImage'] == ''
-                        ? Icon(Icons.person, size: 60, color: Colors.grey)
+                        ? const Icon(Icons.person, size: 60, color: Colors.grey)
                         : null,
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 // Username and email
                 Center(
                   child: Text(
                     "${userData['username']}",
-                    style: TextStyle(
+                    style: const TextStyle(
                         color: Colors.white,
                         fontSize: 24,
                         fontWeight: FontWeight.bold),
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Center(
                   child: Text(
                     "${userData['email']}",
-                    style: TextStyle(color: Colors.white70, fontSize: 16),
+                    style: const TextStyle(color: Colors.white70, fontSize: 16),
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Center(
                   child: Text(
                     "Joined: ${userData['createdAt'] != null ? userData['createdAt'].toDate().toString() : 'N/A'}",
-                    style: TextStyle(color: Colors.white70, fontSize: 16),
+                    style: const TextStyle(color: Colors.white70, fontSize: 16),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 // Displaying the posts created by the current user
-                Text(
+                const Text(
                   "Your Posts:",
                   style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
                       fontWeight: FontWeight.bold),
                 ),
-                SizedBox(height: 10),
+                const SizedBox(height: 10),
                 Expanded(
                   child: StreamBuilder<QuerySnapshot>(
                     stream: FirebaseFirestore.instance
@@ -109,11 +109,11 @@ class ProfileScreen extends StatelessWidget {
                     builder: (context, postSnapshot) {
                       if (postSnapshot.connectionState ==
                           ConnectionState.waiting) {
-                        return Center(child: CircularProgressIndicator());
+                        return const Center(child: CircularProgressIndicator());
                       }
 
                       if (postSnapshot.hasError) {
-                        return Center(
+                        return const Center(
                           child: Text(
                             "Error loading posts",
                             style: TextStyle(color: Colors.white),
@@ -123,7 +123,7 @@ class ProfileScreen extends StatelessWidget {
 
                       if (postSnapshot.data == null ||
                           postSnapshot.data!.docs.isEmpty) {
-                        return Center(
+                        return const Center(
                           child: Text(
                             "No posts available",
                             style: TextStyle(color: Colors.white),
@@ -132,7 +132,8 @@ class ProfileScreen extends StatelessWidget {
                       }
 
                       return GridView.builder(
-                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
                           crossAxisCount: 2,
                           crossAxisSpacing: 10,
                           mainAxisSpacing: 10,
@@ -157,12 +158,12 @@ class ProfileScreen extends StatelessWidget {
                                   // Post Content
                                   Text(
                                     post['content'],
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         color: Colors.white, fontSize: 14),
                                     maxLines: 2,
                                     overflow: TextOverflow.ellipsis,
                                   ),
-                                  SizedBox(height: 8),
+                                  const SizedBox(height: 8),
                                   // Post Image
                                   post['image'] != null
                                       ? ClipRRect(
@@ -175,12 +176,12 @@ class ProfileScreen extends StatelessWidget {
                                             width: double.infinity,
                                           ),
                                         )
-                                      : SizedBox(),
-                                  SizedBox(height: 8),
+                                      : const SizedBox(),
+                                  const SizedBox(height: 8),
                                   // Time (formatted)
                                   Text(
                                     'Posted on: ${post['time'].toDate().toString()}',
-                                    style: TextStyle(
+                                    style: const TextStyle(
                                         color: Colors.white70, fontSize: 12),
                                   ),
                                 ],

@@ -4,6 +4,8 @@ import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 
 class BlogWriteScreen extends StatefulWidget {
+  const BlogWriteScreen({super.key});
+
   @override
   _BlogWriteScreenState createState() => _BlogWriteScreenState();
 }
@@ -70,7 +72,7 @@ class _BlogWriteScreenState extends State<BlogWriteScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text(
+        title: const Text(
           'Write a Blog',
           style: TextStyle(
             color: Colors.white,
@@ -96,12 +98,12 @@ class _BlogWriteScreenState extends State<BlogWriteScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: kToolbarHeight + 20),
+                const SizedBox(height: kToolbarHeight + 20),
                 _buildInputField(
                   controller: _titleController,
                   hintText: 'Title',
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 GestureDetector(
                   onTap: _pickImage,
                   child: Container(
@@ -134,7 +136,7 @@ class _BlogWriteScreenState extends State<BlogWriteScreen> {
                           ),
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Expanded(
                   child: _buildInputField(
                     controller: _contentController,
@@ -143,21 +145,21 @@ class _BlogWriteScreenState extends State<BlogWriteScreen> {
                     expands: true,
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Center(
                   child: ElevatedButton(
                     onPressed: _submitBlog,
                     style: ElevatedButton.styleFrom(
                       foregroundColor: Colors.tealAccent,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 60, vertical: 15),
-                      textStyle:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 60, vertical: 15),
+                      textStyle: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.w600),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                    child: Text('Submit Blog'),
+                    child: const Text('Submit Blog'),
                   ),
                 ),
               ],
@@ -182,7 +184,7 @@ class _BlogWriteScreenState extends State<BlogWriteScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         child: TextField(
           controller: controller,
-          style: TextStyle(color: Colors.white, fontSize: 18),
+          style: const TextStyle(color: Colors.white, fontSize: 18),
           maxLines: maxLines,
           expands: expands,
           decoration: InputDecoration(

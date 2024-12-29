@@ -6,7 +6,7 @@ class UserAccountScreen extends StatelessWidget {
   final String userUid;
 
   // Constructor to pass the user's UID
-  UserAccountScreen({required this.userUid});
+  const UserAccountScreen({super.key, required this.userUid});
 
   @override
   Widget build(BuildContext context) {
@@ -15,16 +15,15 @@ class UserAccountScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: Colors.black,
         elevation: 0,
-        title: Center(
-            child: const Text('User Account',
-                style: TextStyle(color: Colors.white))),
+        title: const Center(
+            child: Text('User Account', style: TextStyle(color: Colors.white))),
       ),
       body: FutureBuilder<DocumentSnapshot>(
         future:
             FirebaseFirestore.instance.collection('users').doc(userUid).get(),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
@@ -32,7 +31,7 @@ class UserAccountScreen extends StatelessWidget {
           }
 
           if (!snapshot.hasData || !snapshot.data!.exists) {
-            return Center(child: Text('User not found'));
+            return const Center(child: Text('User not found'));
           }
 
           // Retrieve user data
@@ -53,16 +52,16 @@ class UserAccountScreen extends StatelessWidget {
                             ? 'https://www.example.com/default_profile_image.png' // Default profile image URL
                             : user.profileImage),
                       ),
-                      SizedBox(height: 16),
+                      const SizedBox(height: 16),
                       Text(
                         user.username,
-                        style: TextStyle(
+                        style: const TextStyle(
                             color: Colors.white,
                             fontSize: 24,
                             fontWeight: FontWeight.bold),
                       ),
-                      SizedBox(height: 8),
-                      Text(
+                      const SizedBox(height: 8),
+                      const Text(
                         'Bio goes here...', // You can add a bio field in UserModel if needed
                         style: TextStyle(color: Colors.white60),
                         textAlign: TextAlign.center,
@@ -70,7 +69,7 @@ class UserAccountScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-                Divider(color: Colors.white54),
+                const Divider(color: Colors.white54),
                 FutureBuilder<QuerySnapshot>(
                   future: FirebaseFirestore.instance
                       .collection('users')
@@ -80,7 +79,7 @@ class UserAccountScreen extends StatelessWidget {
                   builder: (context, postSnapshot) {
                     if (postSnapshot.connectionState ==
                         ConnectionState.waiting) {
-                      return Center(child: CircularProgressIndicator());
+                      return const Center(child: CircularProgressIndicator());
                     }
 
                     if (postSnapshot.hasError) {
@@ -90,7 +89,7 @@ class UserAccountScreen extends StatelessWidget {
 
                     if (!postSnapshot.hasData ||
                         postSnapshot.data!.docs.isEmpty) {
-                      return Center(child: Text('No posts yet.'));
+                      return const Center(child: Text('No posts yet.'));
                     }
 
                     List<PostModel> posts = postSnapshot.data!.docs.map((doc) {
@@ -99,10 +98,11 @@ class UserAccountScreen extends StatelessWidget {
                     }).toList();
 
                     return GridView.builder(
-                      padding: EdgeInsets.all(16),
+                      padding: const EdgeInsets.all(16),
                       shrinkWrap: true,
-                      physics: NeverScrollableScrollPhysics(),
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      physics: const NeverScrollableScrollPhysics(),
+                      gridDelegate:
+                          const SliverGridDelegateWithFixedCrossAxisCount(
                         crossAxisCount: 3,
                         crossAxisSpacing: 10,
                         mainAxisSpacing: 10,
