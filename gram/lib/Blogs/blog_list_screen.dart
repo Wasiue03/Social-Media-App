@@ -72,7 +72,7 @@ class _BlogListScreenState extends State<BlogListScreen>
         onPressed: () async {
           final newBlog = await Navigator.push(
             context,
-            MaterialPageRoute(builder: (context) => BlogWriteScreen()),
+            MaterialPageRoute(builder: (context) => const BlogWriteScreen()),
           );
           if (newBlog != null) {
             setState(() {}); // Refresh UI if a new blog is added

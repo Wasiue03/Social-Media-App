@@ -27,7 +27,7 @@ class _SignInPageState extends State<SignInPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => HomePage()), // Replace with your home page
+              builder: (context) => const HomePage()), // Replace with your home page
         );
       }
     } on FirebaseAuthException catch (e) {
@@ -125,14 +125,14 @@ class _SignInPageState extends State<SignInPage> {
                 shadowColor: Colors.white70,
                 elevation: 10,
               ),
-              child: Text('Sign In'),
+              child: const Text('Sign In'),
             ),
             const SizedBox(height: 20),
             TextButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SignUpPage()),
+                  MaterialPageRoute(builder: (context) => const SignUpPage()),
                 );
               },
               child: const Text(

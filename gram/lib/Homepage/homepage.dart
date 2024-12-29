@@ -26,7 +26,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   final List<Widget> _screens = [
-    PostFeed(), // Home Screen
+    const PostFeed(), // Home Screen
     PostUploadScreen(onPostUploaded: (post) {}), // Add Post Screen
   ];
 
@@ -190,7 +190,7 @@ class _HomePageState extends State<HomePage> {
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              BlogListScreen(), // Navigate to BlogsScreen
+                              const BlogListScreen(), // Navigate to BlogsScreen
                         ),
                       );
                     }),
@@ -200,7 +200,7 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 16),
 
               // Post Feed
-              PostFeed(),
+              const PostFeed(),
             ],
           ),
         ),

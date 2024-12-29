@@ -8,7 +8,7 @@ import 'package:gram/Sign/signup.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -25,9 +25,9 @@ class MyApp extends StatelessWidget {
         ),
         initialRoute: '/',
         routes: {
-          '/': (context) => ChatScreen(),
-          '/signup': (context) => SignUpPage(),
-          '/signin': (context) => SignInPage()
+          '/': (context) => const ChatScreen(),
+          '/signup': (context) => const SignUpPage(),
+          '/signin': (context) => const SignInPage()
         });
   }
 }

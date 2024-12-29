@@ -34,7 +34,7 @@ class _SignUpPageState extends State<SignUpPage> {
         Navigator.pushReplacement(
             context,
             MaterialPageRoute(
-              builder: (context) => HomePage(),
+              builder: (context) => const HomePage(),
             )
             // ProfileScreen(userId: user.uid)), // Navigate to ProfileScreen
             );
@@ -168,7 +168,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 shadowColor: Colors.white70,
                 elevation: 10,
               ),
-              child: Text('Sign Up'),
+              child: const Text('Sign Up'),
             ),
           ],
         ),
