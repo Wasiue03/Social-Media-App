@@ -1,7 +1,11 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:http/http.dart' as http;
+import 'package:image_picker/image_picker.dart';
 
 class BlogWriteScreen extends StatefulWidget {
+  const BlogWriteScreen({super.key});
+
   @override
   _BlogWriteScreenState createState() => _BlogWriteScreenState();
 }
@@ -9,22 +13,55 @@ class BlogWriteScreen extends StatefulWidget {
 class _BlogWriteScreenState extends State<BlogWriteScreen> {
   final TextEditingController _titleController = TextEditingController();
   final TextEditingController _contentController = TextEditingController();
+  File? _selectedImage;
 
-  void _submitBlog() async {
+  final ImagePicker _picker = ImagePicker();
+
+  Future<void> _pickImage() async {
+    final pickedFile = await _picker.pickImage(source: ImageSource.gallery);
+    if (pickedFile != null) {
+      setState(() {
+        _selectedImage = File(pickedFile.path);
+      });
+    }
+  }
+
+  Future<void> _submitBlog() async {
     final title = _titleController.text;
     final content = _contentController.text;
-    if (title.isNotEmpty && content.isNotEmpty) {
+
+    if (title.isNotEmpty && content.isNotEmpty && _selectedImage != null) {
       try {
-        await FirebaseFirestore.instance.collection('blogs').add({
-          'title': title,
-          'content': content,
-          'timestamp': Timestamp.now(),
-        });
-        print('Blog submitted: $title - $content');
-        Navigator.pop(context, {'title': title, 'content': content});
+        final url = Uri.parse('http://192.168.100.6:5000/create_blog');
+
+        var request = http.MultipartRequest('POST', url)
+          ..fields['title'] = title
+          ..fields['content'] = content;
+
+        var image = await http.MultipartFile.fromPath(
+          'image',
+          _selectedImage!.path,
+          filename: _selectedImage!.path.split('/').last,
+        );
+        request.files.add(image);
+
+        final response = await request.send();
+
+        if (response.statusCode == 201) {
+          print('Blog created successfully');
+          Navigator.pop(context, {
+            'title': title,
+            'content': content,
+            'image': _selectedImage!.path,
+          });
+        } else {
+          print('Error creating blog: ${response.statusCode}');
+        }
       } catch (e) {
-        print('Error saving blog: $e');
+        print('Error submitting blog: $e');
       }
+    } else {
+      print('Please fill in the title, content, and add an image.');
     }
   }
 
@@ -35,7 +72,7 @@ class _BlogWriteScreenState extends State<BlogWriteScreen> {
       appBar: AppBar(
         backgroundColor: Colors.transparent,
         elevation: 0,
-        title: Text(
+        title: const Text(
           'Write a Blog',
           style: TextStyle(
             color: Colors.white,
@@ -61,12 +98,45 @@ class _BlogWriteScreenState extends State<BlogWriteScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: kToolbarHeight + 20),
+                const SizedBox(height: kToolbarHeight + 20),
                 _buildInputField(
                   controller: _titleController,
                   hintText: 'Title',
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
+                GestureDetector(
+                  onTap: _pickImage,
+                  child: Container(
+                    height: 150,
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      color: Colors.grey[850],
+                      borderRadius: BorderRadius.circular(20),
+                      border: Border.all(
+                        color: _selectedImage != null
+                            ? Colors.tealAccent
+                            : Colors.grey[700]!,
+                        width: 2,
+                      ),
+                    ),
+                    child: _selectedImage == null
+                        ? Center(
+                            child: Icon(
+                              Icons.add_photo_alternate_outlined,
+                              color: Colors.grey[400],
+                              size: 50,
+                            ),
+                          )
+                        : ClipRRect(
+                            borderRadius: BorderRadius.circular(20),
+                            child: Image.file(
+                              _selectedImage!,
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                  ),
+                ),
+                const SizedBox(height: 20),
                 Expanded(
                   child: _buildInputField(
                     controller: _contentController,
@@ -75,22 +145,21 @@ class _BlogWriteScreenState extends State<BlogWriteScreen> {
                     expands: true,
                   ),
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 Center(
                   child: ElevatedButton(
                     onPressed: _submitBlog,
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.tealAccent,
-                      onPrimary: Colors.black,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 60, vertical: 15),
-                      textStyle:
-                          TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                      foregroundColor: Colors.tealAccent,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 60, vertical: 15),
+                      textStyle: const TextStyle(
+                          fontSize: 18, fontWeight: FontWeight.w600),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(30),
                       ),
                     ),
-                    child: Text('Submit Blog'),
+                    child: const Text('Submit Blog'),
                   ),
                 ),
               ],
@@ -115,7 +184,7 @@ class _BlogWriteScreenState extends State<BlogWriteScreen> {
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         child: TextField(
           controller: controller,
-          style: TextStyle(color: Colors.white, fontSize: 18),
+          style: const TextStyle(color: Colors.white, fontSize: 18),
           maxLines: maxLines,
           expands: expands,
           decoration: InputDecoration(

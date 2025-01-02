@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:gram/Blogs/blog_list_screen.dart';
 import 'package:gram/Homepage/homepage.dart';
 import 'package:gram/Sign/signup.dart';
 
 class SignInPage extends StatefulWidget {
+  const SignInPage({super.key});
+
   @override
   _SignInPageState createState() => _SignInPageState();
 }
@@ -26,7 +27,7 @@ class _SignInPageState extends State<SignInPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => HomePage()), // Replace with your home page
+              builder: (context) => const HomePage()), // Replace with your home page
         );
       }
     } on FirebaseAuthException catch (e) {
@@ -42,11 +43,12 @@ class _SignInPageState extends State<SignInPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.black,
-          title: Text("Error", style: TextStyle(color: Colors.redAccent)),
-          content: Text(message, style: TextStyle(color: Colors.white)),
+          title: const Text("Error", style: TextStyle(color: Colors.redAccent)),
+          content: Text(message, style: const TextStyle(color: Colors.white)),
           actions: <Widget>[
             TextButton(
-              child: Text("OK", style: TextStyle(color: Colors.tealAccent)),
+              child:
+                  const Text("OK", style: TextStyle(color: Colors.tealAccent)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -62,7 +64,7 @@ class _SignInPageState extends State<SignInPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
-        title: Text('Sign In',
+        title: const Text('Sign In',
             style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
         backgroundColor: Colors.transparent,
         elevation: 0,
@@ -74,7 +76,7 @@ class _SignInPageState extends State<SignInPage> {
           children: <Widget>[
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Email',
                 hintText: 'Enter your email',
                 hintStyle: TextStyle(color: Colors.white70),
@@ -86,13 +88,13 @@ class _SignInPageState extends State<SignInPage> {
                   borderSide: BorderSide(color: Colors.white),
                 ),
               ),
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
               keyboardType: TextInputType.emailAddress,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Password',
                 hintText: 'Enter your password',
                 hintStyle: TextStyle(color: Colors.white70),
@@ -104,34 +106,36 @@ class _SignInPageState extends State<SignInPage> {
                   borderSide: BorderSide(color: Colors.white),
                 ),
               ),
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
               obscureText: true,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _signIn,
-              child: Text('Sign In'),
               style: ElevatedButton.styleFrom(
-                primary: Colors.white,
-                onPrimary: Colors.black,
+                foregroundColor: Colors.black,
+                backgroundColor: Colors.white,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0),
                 ),
-                padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 30.0),
-                textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 15.0, horizontal: 30.0),
+                textStyle:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 shadowColor: Colors.white70,
                 elevation: 10,
               ),
+              child: const Text('Sign In'),
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             TextButton(
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => SignUpPage()),
+                  MaterialPageRoute(builder: (context) => const SignUpPage()),
                 );
               },
-              child: Text(
+              child: const Text(
                 'Don\'t have an account? Sign Up',
                 style: TextStyle(
                     color: Colors.tealAccent, fontWeight: FontWeight.bold),

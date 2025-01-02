@@ -1,17 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:gram/Homepage/homepage.dart';
-import 'package:gram/Sign/signin.dart';
+import 'package:gram/Profile/user_profile.dart';
 
 class SignUpPage extends StatefulWidget {
+  const SignUpPage({super.key});
+
   @override
   _SignUpPageState createState() => _SignUpPageState();
 }
 
 class _SignUpPageState extends State<SignUpPage> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
 
   Future<void> _signUp() async {
     try {
@@ -23,16 +29,41 @@ class _SignUpPageState extends State<SignUpPage> {
       User? user = userCredential.user;
 
       if (user != null) {
+        await _saveUserDetails(user);
+
         Navigator.pushReplacement(
+<<<<<<< HEAD
           context,
           MaterialPageRoute(
               builder: (context) => HomePage()), 
         );
+=======
+            context,
+            MaterialPageRoute(
+              builder: (context) => const HomePage(),
+            )
+            // ProfileScreen(userId: user.uid)), // Navigate to ProfileScreen
+            );
+>>>>>>> f41f13ea250c2a84334c38ed427ab33e4aefb55e
       }
     } on FirebaseAuthException catch (e) {
       _showErrorDialog(e.message ?? "An unknown error occurred.");
     } catch (e) {
       _showErrorDialog("An unknown error occurred.");
+    }
+  }
+
+  Future<void> _saveUserDetails(User user) async {
+    try {
+      await _firestore.collection('users').doc(user.uid).set({
+        'uid': user.uid,
+        'email': user.email,
+        'username': _usernameController.text,
+        'profileImage': '', // Default or empty profile image
+        'createdAt': FieldValue.serverTimestamp(),
+      });
+    } catch (e) {
+      _showErrorDialog("Failed to save user details: $e");
     }
   }
 
@@ -42,11 +73,12 @@ class _SignUpPageState extends State<SignUpPage> {
       builder: (BuildContext context) {
         return AlertDialog(
           backgroundColor: Colors.black,
-          title: Text("Error", style: TextStyle(color: Colors.redAccent)),
-          content: Text(message, style: TextStyle(color: Colors.white)),
+          title: const Text("Error", style: TextStyle(color: Colors.redAccent)),
+          content: Text(message, style: const TextStyle(color: Colors.white)),
           actions: <Widget>[
             TextButton(
-              child: Text("OK", style: TextStyle(color: Colors.tealAccent)),
+              child:
+                  const Text("OK", style: TextStyle(color: Colors.tealAccent)),
               onPressed: () {
                 Navigator.of(context).pop();
               },
@@ -66,7 +98,7 @@ class _SignUpPageState extends State<SignUpPage> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Text(
+            const Text(
               'Sign Up',
               style: TextStyle(
                 color: Colors.white,
@@ -74,10 +106,27 @@ class _SignUpPageState extends State<SignUpPage> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 40),
+            const SizedBox(height: 40),
+            TextField(
+              controller: _usernameController,
+              decoration: const InputDecoration(
+                labelText: 'Username',
+                hintText: 'Enter your username',
+                hintStyle: TextStyle(color: Colors.white70),
+                labelStyle: TextStyle(color: Colors.white),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+              ),
+              style: const TextStyle(color: Colors.white),
+            ),
+            const SizedBox(height: 16),
             TextField(
               controller: _emailController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Email',
                 hintText: 'Enter your email',
                 hintStyle: TextStyle(color: Colors.white70),
@@ -89,13 +138,13 @@ class _SignUpPageState extends State<SignUpPage> {
                   borderSide: BorderSide(color: Colors.white),
                 ),
               ),
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
               keyboardType: TextInputType.emailAddress,
             ),
-            SizedBox(height: 16),
+            const SizedBox(height: 16),
             TextField(
               controller: _passwordController,
-              decoration: InputDecoration(
+              decoration: const InputDecoration(
                 labelText: 'Password',
                 hintText: 'Enter your password',
                 hintStyle: TextStyle(color: Colors.white70),
@@ -107,38 +156,26 @@ class _SignUpPageState extends State<SignUpPage> {
                   borderSide: BorderSide(color: Colors.white),
                 ),
               ),
-              style: TextStyle(color: Colors.white),
+              style: const TextStyle(color: Colors.white),
               obscureText: true,
             ),
-            SizedBox(height: 20),
+            const SizedBox(height: 20),
             ElevatedButton(
               onPressed: _signUp,
-              child: Text('Sign Up'),
               style: ElevatedButton.styleFrom(
-                primary: Colors.white,
-                onPrimary: Colors.black,
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.black,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(30.0),
                 ),
-                padding: EdgeInsets.symmetric(vertical: 15.0, horizontal: 30.0),
-                textStyle: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                padding: const EdgeInsets.symmetric(
+                    vertical: 15.0, horizontal: 30.0),
+                textStyle:
+                    const TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
                 shadowColor: Colors.white70,
                 elevation: 10,
               ),
-            ),
-            SizedBox(height: 20),
-            TextButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => SignInPage()),
-                );
-              },
-              child: Text(
-                'Already have an account? Sign In',
-                style: TextStyle(
-                    color: Colors.tealAccent, fontWeight: FontWeight.bold),
-              ),
+              child: const Text('Sign Up'),
             ),
           ],
         ),

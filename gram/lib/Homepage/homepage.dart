@@ -1,49 +1,117 @@
 import 'package:flutter/material.dart';
-import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:gram/Blogs/blog_list_screen.dart';
-import 'package:gram/User/user_account.dart';
-import 'package:gram/feed/add_posts.dart';
+import 'package:gram/Drawer/Drawer.dart';
+import 'package:gram/Profile/user_profile.dart';
+import 'package:gram/Universes/universes_screen.dart';
 import 'package:gram/feed/post_feed.dart';
+import 'package:gram/feed/add_posts.dart';
+
+import 'package:firebase_auth/firebase_auth.dart'; // Import for Firebase Authentication
 
 class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  List<Map<String, dynamic>> _posts = [];
+  int _currentIndex = 0;
+  User? _currentUser; // Firebase User
 
-  void _addPost(Map<String, dynamic> post) {
-    setState(() {
-      _posts.add(post);
-    });
+  @override
+  void initState() {
+    super.initState();
+    _currentUser = FirebaseAuth.instance.currentUser; // Get the current user
   }
 
-  void _navigateToPostUpload() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PostUploadScreen(
-          onPostUploaded: _addPost,
+  final List<Widget> _screens = [
+    const PostFeed(), // Home Screen
+    PostUploadScreen(onPostUploaded: (post) {}), // Add Post Screen
+  ];
+
+  void _onDrawerMenuSelected(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+
+    if (index == 1) {
+      // Handle settings navigation, if needed
+      print('Navigate to Settings');
+    }
+  }
+
+  void _navigateToUserAccount() {}
+
+  Widget _buildToggleButton(String text, bool isSelected, VoidCallback onTap) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: const EdgeInsets.symmetric(vertical: 10),
+          decoration: BoxDecoration(
+            color: isSelected ? Colors.white : Colors.grey.shade800,
+            borderRadius: BorderRadius.circular(20),
+          ),
+          child: Center(
+            child: Text(
+              text,
+              style: TextStyle(
+                color: isSelected ? Colors.black : Colors.white,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
         ),
       ),
     );
   }
 
-  void _navigateToUserAccount() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => UserAccountScreen(),
-      ),
-    );
-  }
-
-  void _navigateToBlogList() {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => BlogListScreen(),
+  Widget _buildUniverseCard(
+      String username, String imagePath, String universeDescription) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => UniverseScreen(
+              username: username,
+              imagePath: imagePath,
+              description: universeDescription,
+            ),
+          ),
+        );
+      },
+      child: Card(
+        color: Colors.grey.shade800,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+        child: Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              CircleAvatar(
+                radius: 30,
+                backgroundImage: AssetImage(imagePath),
+              ),
+              const SizedBox(width: 10),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    username,
+                    style: const TextStyle(color: Colors.white, fontSize: 16),
+                  ),
+                  const SizedBox(height: 4),
+                  Text(
+                    universeDescription,
+                    style: const TextStyle(color: Colors.white70, fontSize: 12),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -54,45 +122,41 @@ class _HomePageState extends State<HomePage> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         backgroundColor: Colors.black,
+        iconTheme: const IconThemeData(color: Colors.white),
         elevation: 0,
-        leading: IconButton(
-          icon: Icon(Icons.menu),
-          onPressed: () {},
-        ),
         actions: [
           GestureDetector(
             onTap: _navigateToUserAccount,
-            child: CircleAvatar(
+            child: const CircleAvatar(
               backgroundImage:
                   AssetImage('assets/images/profiles/profile2.jpeg'),
             ),
           ),
-          SizedBox(width: 16),
+          const SizedBox(width: 16),
         ],
+      ),
+      drawer: CustomDrawer(
+        onMenuItemSelected: _onDrawerMenuSelected,
+        onLogout: () {
+          Navigator.pushReplacementNamed(context, '/signin');
+        },
       ),
       body: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Daily Inspiration Section
+              // Universe Cards Section
               Padding(
                 padding: const EdgeInsets.all(16.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      'Daily Inspiration 💡',
-                      style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 24,
-                          fontWeight: FontWeight.bold),
-                    ),
-                    SizedBox(height: 10),
-                    Container(
-                      height: 100,
-                      child: ListView.builder(
+                    SizedBox(
+                      height: 120,
+                      child: ListView(
                         scrollDirection: Axis.horizontal,
+<<<<<<< HEAD
                         itemCount:
                             5, 
                         itemBuilder: (context, index) {
@@ -194,61 +258,120 @@ class _HomePageState extends State<HomePage> {
                             ),
                           );
                         },
+=======
+                        children: [
+                          _buildUniverseCard(
+                              'Sophia Larson',
+                              'assets/images/profiles/profile1.jpeg',
+                              'Loves traveling and photography.'),
+                          _buildUniverseCard(
+                              'Georgia Rian',
+                              'assets/images/profiles/profile2.jpeg',
+                              'Tech enthusiast and bookworm.'),
+                          _buildUniverseCard(
+                              'Alex Johnson',
+                              'assets/images/profiles/profile3.jpeg',
+                              'Music lover and foodie.'),
+                        ],
+>>>>>>> f41f13ea250c2a84334c38ed427ab33e4aefb55e
                       ),
                     ),
                   ],
                 ),
               ),
 
-              // Post Feed
-              PostFeed(
-                posts: _posts,
+              // Following and Discover Buttons
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildToggleButton('Following', true, () {
+                      // Handle Following button action
+                    }),
+                    _buildToggleButton('Discover', false, () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) =>
+                              const BlogListScreen(), // Navigate to BlogsScreen
+                        ),
+                      );
+                    }),
+                  ],
+                ),
               ),
+              const SizedBox(height: 16),
+
+              // Post Feed
+              const PostFeed(),
             ],
           ),
         ),
       ),
-      bottomNavigationBar: Container(
-        color: Colors.black,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 20.0),
-          child: GNav(
-            backgroundColor: Colors.black,
-            color: Colors.white,
-            activeColor: Colors.white,
-            tabBackgroundColor: Colors.grey.shade800,
-            padding: EdgeInsets.all(16),
-            gap: 8,
-            onTabChange: (index) {
-              if (index == 2) {
-                _navigateToPostUpload();
-              }
-            },
-            tabs: [
-              GButton(
-                icon: Icons.home,
-                text: 'Home',
-              ),
-              GButton(
-                icon: Icons.search,
-                text: 'Search',
-              ),
-              GButton(
-                icon: Icons.add,
-                text: 'Add',
-              ),
-              GButton(
-                icon: Icons.favorite,
-                text: 'Favorites',
-              ),
-              GButton(
-                icon: Icons.person,
-                text: 'Profile',
-                onPressed: _navigateToUserAccount,
-              ),
-            ],
+      bottomNavigationBar: BottomNavigationBar(
+        backgroundColor: Colors.black,
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _currentIndex,
+        items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home, color: Colors.white),
+            label: 'Home',
           ),
-        ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search, color: Colors.white),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.add_circle_outline, color: Colors.white),
+            label: 'Add',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite, color: Colors.white),
+            label: 'Favorites',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person, color: Colors.white),
+            label: 'Profile',
+          ),
+        ],
+        selectedItemColor: Colors.white,
+        unselectedItemColor: Colors.grey,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index; // Update current screen index
+          });
+
+          // Navigate to the Add Post screen
+          if (index == 2) {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) =>
+                      PostUploadScreen(onPostUploaded: (post) {})),
+            );
+          }
+
+          // Navigate to Profile screen
+          if (index == 4) {
+            if (_currentUser != null) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) =>
+                      ProfileScreen(userId: _currentUser!.uid),
+                ),
+              );
+            } else {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text("No user logged in."),
+                  backgroundColor: Colors.red,
+                ),
+              );
+            }
+          }
+        },
       ),
     );
   }
