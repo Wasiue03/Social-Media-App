@@ -69,9 +69,9 @@ class _PostFeedState extends State<PostFeed> {
                         ),
                       ),
                       if (post['image'] !=
-                          null) // Check if image URL or path is provided
+                          null) 
                         post['image'].startsWith(
-                                'http') // Check if the image is a URL
+                                'http') 
                             ? Image.network(
                                 post['image'],
                                 fit: BoxFit.cover,

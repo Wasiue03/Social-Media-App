@@ -94,7 +94,7 @@ class _HomePageState extends State<HomePage> {
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
                         itemCount:
-                            5, // Replace with the actual count of inspirations
+                            5, 
                         itemBuilder: (context, index) {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
@@ -122,8 +122,8 @@ class _HomePageState extends State<HomePage> {
                 child: Center(
                   child: ElevatedButton.icon(
                     style: ElevatedButton.styleFrom(
-                      primary: Colors.tealAccent, // Button color
-                      onPrimary: Colors.black, // Text and icon color
+                      primary: Colors.tealAccent, 
+                      onPrimary: Colors.black, 
                       padding:
                           EdgeInsets.symmetric(horizontal: 32, vertical: 16),
                       shape: RoundedRectangleBorder(
@@ -152,15 +152,15 @@ class _HomePageState extends State<HomePage> {
                     ),
                     SizedBox(height: 10),
                     Container(
-                      height: 300, // Adjust height as needed
+                      height: 300, 
                       child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: 5, // Replace with the actual count
+                        itemCount: 5, 
                         itemBuilder: (context, index) {
                           return Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Container(
-                              width: 200, // Adjust width as needed
+                              width: 200, 
                               color: Colors.grey.shade800,
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,

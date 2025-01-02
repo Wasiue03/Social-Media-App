@@ -26,7 +26,7 @@ class _SignUpPageState extends State<SignUpPage> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-              builder: (context) => HomePage()), // Replace with your home page
+              builder: (context) => HomePage()), 
         );
       }
     } on FirebaseAuthException catch (e) {
