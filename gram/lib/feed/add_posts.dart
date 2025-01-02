@@ -33,7 +33,7 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
     if (content.isNotEmpty) {
       String? imageUrl;
 
-      // Upload image if it exists
+      
       if (_imagePath != null) {
         try {
           final storageRef = FirebaseStorage.instance
@@ -44,21 +44,21 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
           final uploadTask = storageRef.putFile(File(_imagePath!));
           final snapshot = await uploadTask.whenComplete(() {});
           imageUrl = await snapshot.ref.getDownloadURL();
-          print('Image uploaded: $imageUrl'); // Debugging statement
+          print('Image uploaded: $imageUrl'); 
         } catch (e) {
           print('Error uploading image: $e');
         }
       }
 
       try {
-        // Save post data to Firestore
+        
         await FirebaseFirestore.instance.collection('posts').add({
-          'user': 'New User', // Replace with actual user information
+          'user': 'New User', 
           'time': Timestamp.now(),
           'content': content,
           'image': imageUrl,
         });
-        print('Post submitted: $content'); // Debugging statement
+        print('Post submitted: $content'); 
 
         widget.onPostUploaded({
           'user': 'New User',
@@ -66,7 +66,7 @@ class _PostUploadScreenState extends State<PostUploadScreen> {
           'content': content,
           'image': imageUrl,
         });
-        Navigator.pop(context); // Navigate back after upload
+        Navigator.pop(context); 
       } catch (e) {
         print('Error saving post: $e');
       }
