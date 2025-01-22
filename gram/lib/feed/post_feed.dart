@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -94,7 +92,7 @@ class _PostFeedState extends State<PostFeed> {
                     } else if (post['time'] is DateTime) {
                       postTime = post['time'];
                     } else {
-                      postTime = DateTime.now(); // Fallback to current time
+                      postTime = DateTime.now();
                     }
 
                     return Padding(
@@ -122,53 +120,7 @@ class _PostFeedState extends State<PostFeed> {
                                 style: const TextStyle(color: Colors.white),
                               ),
                             ),
-                            if (post['image'] != null)
-                              post['image'].startsWith('http')
-                                  ? Image.network(
-                                      post['image'],
-                                      fit: BoxFit.cover,
-                                      height: 200,
-                                      width: double.infinity,
-                                    )
-                                  : Image.file(
-                                      File(post['image']),
-                                      fit: BoxFit.cover,
-                                      height: 200,
-                                      width: double.infinity,
-                                    ),
-                            Padding(
-                              padding: const EdgeInsets.all(8.0),
-                              child: Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                        icon: const Icon(Icons.thumb_up,
-                                            color: Colors.white),
-                                        onPressed: () {},
-                                      ),
-                                      const Text('Like',
-                                          style:
-                                              TextStyle(color: Colors.white)),
-                                    ],
-                                  ),
-                                  Row(
-                                    children: [
-                                      IconButton(
-                                        icon: const Icon(Icons.comment,
-                                            color: Colors.white),
-                                        onPressed: () {},
-                                      ),
-                                      const Text('Comment',
-                                          style:
-                                              TextStyle(color: Colors.white)),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                            ),
+                            const SizedBox(height: 8),
                           ],
                         ),
                       ),
